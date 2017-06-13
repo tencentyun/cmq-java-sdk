@@ -13,7 +13,7 @@ public class CMQClient {
 	protected String secretKey;
 	protected String method;
 	protected String signMethod;
-	
+	protected CMQHttp cmqHttp;
 	
 	public CMQClient(String endpoint, String path, String secretId, String secretKey, String method){
 		this.endpoint = endpoint;
@@ -22,6 +22,7 @@ public class CMQClient {
 		this.secretKey = secretKey;
 		this.method = method;
 		this.signMethod="sha1";
+        this.cmqHttp = new CMQHttp();
 	}
 	
 	public void setSignMethod(String signMethod)
@@ -61,7 +62,6 @@ public class CMQClient {
 				flag = true;
 			}
 			param.put("Signature",CMQTool.sign(src, this.secretKey,this.signMethod));
-	
 			String url = "";
 			String req = "";
 			if(this.method.equals("GET")){
@@ -93,7 +93,7 @@ public class CMQClient {
 			{
 			  userTimeout=Integer.parseInt(param.get("UserpollingWaitSeconds"));
 			}
-			rsp = CMQHttp.request(this.method, url, req,userTimeout);
+			rsp = this.cmqHttp.request(this.method,url,req,userTimeout);
 			//System.out.println("rsp:"+rsp);
 		
 		}catch(Exception e){

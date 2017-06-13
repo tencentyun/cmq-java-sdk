@@ -15,51 +15,71 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 public class CMQHttp {
-	protected static int timeout = 10000;
-	protected static boolean isKeepAlive = true;
-	
-	public static String request(String method, String url, String req,
+	private  int timeout ;
+	private  boolean isKeepAlive;
+    private URLConnection connection;
+    private String url ;	
+
+    public CMQHttp()
+    {
+        this.connection = null;
+        this.url = "";
+        this.timeout = 10000;
+        this.isKeepAlive = true;
+    }
+    /*
+     * if we find the url is different with this.url we should new another connection 
+     * 
+     */
+    private void newHttpConnection(String url) throws Exception
+    {
+        if(this.url != url)
+        {
+            URL realUrl = new URL(url);
+            if(url.toLowerCase().startsWith("https")){
+                HttpsURLConnection httpsConn = (HttpsURLConnection)realUrl.openConnection();
+                httpsConn.setHostnameVerifier(new HostnameVerifier(){
+                    public boolean verify(String hostname, SSLSession session){
+                        return true;
+                    }
+                });
+                connection = httpsConn;
+            }
+            else{
+                connection = realUrl.openConnection();
+            }
+           	this.connection.setRequestProperty("Accept", "*/*");
+			if(this.isKeepAlive)
+				this.connection.setRequestProperty("Connection", "Keep-Alive");
+			this.connection.setRequestProperty("User-Agent",
+					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+
+            this.url = url ;
+        }
+    }
+    public  String request(String method, String url, String req,
 			int userTimeout) throws Exception {
 		String result = "";
 		BufferedReader in = null;
-		
 		try{
-			URL realUrl = new URL(url);
-			URLConnection connection = null;
-			if (url.toLowerCase().startsWith("https")) {
-				HttpsURLConnection httpsConn = (HttpsURLConnection)realUrl.openConnection();
-				httpsConn.setHostnameVerifier(new HostnameVerifier() {
-					public boolean verify(String hostname, SSLSession session) {
-						return true;
-					}
-				});
-				connection = httpsConn;
-			} else {
-				connection = realUrl.openConnection();
-			}
-	
-			connection.setRequestProperty("Accept", "*/*");
-			if(isKeepAlive)
-				connection.setRequestProperty("Connection", "Keep-Alive");
-			connection.setRequestProperty("User-Agent",
-					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-	
-			connection.setConnectTimeout(timeout+userTimeout);
+            if (this.url != url)
+                this.newHttpConnection(url);
+
+			this.connection.setConnectTimeout(timeout+userTimeout);
 	
 			if (method.equals("POST")) {
-				((HttpURLConnection)connection).setRequestMethod("POST");
+				((HttpURLConnection)this.connection).setRequestMethod("POST");
 	
-				connection.setDoOutput(true);
-				connection.setDoInput(true);
-				DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+				this.connection.setDoOutput(true);
+				this.connection.setDoInput(true);
+				DataOutputStream out = new DataOutputStream(this.connection.getOutputStream());
 				out.writeBytes(req);
 				out.flush();
 				out.close();
 			}
-	
-	
-			connection.connect();
-			int status = ((HttpURLConnection)connection).getResponseCode();
+
+			this.connection.connect();
+			int status = ((HttpURLConnection)this.connection).getResponseCode();
 			if(status != 200)
 				throw new CMQServerException(status);
 	
