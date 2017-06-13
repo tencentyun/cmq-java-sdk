@@ -9,9 +9,9 @@ public class cmq_sample_queue {
 	public static void main(String[] args) {
 
 	//从腾讯云官网查询的云API密钥信息
-        String secretId="AKIDU65RoYl9Q4okMfnrTE9FVhmmuWYnZJXl";
-        String secretKey="mWVemFhWOiQX0ZEErlizRDLXgOVyptH1";
-        String endpoint = "http://cmq-queue-sh.api.qcloud.com";
+        String secretId="";
+        String secretKey="";
+        String endpoint = "";
 
     try
     {
