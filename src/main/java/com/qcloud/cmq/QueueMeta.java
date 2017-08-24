@@ -37,4 +37,7 @@ public class QueueMeta {
 	/** 延时消息数量 */
 	public int delayMsgNum;
 	
+	/** 回溯时间 */
+	public int rewindSeconds;
+	
 }

@@ -46,6 +46,8 @@ public class Queue{
 			param.put("maxMsgSize",Integer.toString(meta.maxMsgSize));
 		if(meta.msgRetentionSeconds > 0)
 			param.put("msgRetentionSeconds",Integer.toString(meta.msgRetentionSeconds));
+		if(meta.rewindSeconds > 0)
+			param.put("rewindSeconds",Integer.toString(meta.rewindSeconds));
 		
 		String result = this.client.call("SetQueueAttributes", param);
 		JSONObject jsonObj = new JSONObject(result);
@@ -84,6 +86,7 @@ public class Queue{
 		meta.rewindmsgNum = jsonObj.getInt("rewindMsgNum");
 		meta.minMsgTime = jsonObj.getInt("minMsgTime");
 		meta.delayMsgNum = jsonObj.getInt("delayMsgNum");
+		meta.rewindSeconds = jsonObj.getInt("rewindSeconds");
 		
 		
 		return meta;
@@ -295,4 +298,29 @@ public class Queue{
 		if(code != 0)
 			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
 	}
+	
+	
+	/**
+	 * 回溯队列
+	 * @param backTrackingTime
+	 * @throws CMQClientException
+	 * @throws CMQServerException
+	*/
+	
+	public void rewindQueue(int backTrackingTime) throws Exception {
+		if(backTrackingTime  <=0 )
+			return;
+		
+		TreeMap<String, String> param = new TreeMap<String, String>();
+
+		param.put("queueName",this.queueName);
+		param.put("startConsumeTime",Integer.toString(backTrackingTime));
+		
+		String result = this.client.call("RewindQueue", param);
+		JSONObject jsonObj = new JSONObject(result);
+		int code = jsonObj.getInt("code");
+		if(code != 0)
+			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+	}
+	
 }

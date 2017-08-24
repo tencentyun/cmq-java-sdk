@@ -75,6 +75,8 @@ public class Account{
 			param.put("maxMsgSize",Integer.toString(meta.maxMsgSize));
 		if(meta.msgRetentionSeconds > 0)
 			param.put("msgRetentionSeconds",Integer.toString(meta.msgRetentionSeconds));
+		if(meta.rewindSeconds > 0)
+			param.put("rewindSeconds",Integer.toString(meta.rewindSeconds));
 
 		String result = this.client.call("CreateQueue", param);
 		JSONObject jsonObj = new JSONObject(result);
