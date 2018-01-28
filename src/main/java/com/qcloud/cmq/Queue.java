@@ -174,7 +174,7 @@ public class Queue{
 		TreeMap<String, String> param = new TreeMap<String, String>();
 
 	    param.put("queueName",this.queueName);
-        if(pollingWaitSeconds > 0)
+        if(pollingWaitSeconds >=  0)
         {
 		param.put("UserpollingWaitSeconds",Integer.toString(pollingWaitSeconds *1000));
 		param.put("pollingWaitSeconds", Integer.toString(pollingWaitSeconds) );
@@ -216,7 +216,7 @@ public class Queue{
 
 		param.put("queueName",this.queueName);
 		param.put("numOfMsg",Integer.toString(numOfMsg));
-		if(pollingWaitSeconds > 0)
+		if(pollingWaitSeconds >= 0)
         {
 		param.put("UserpollingWaitSeconds",Integer.toString(pollingWaitSeconds*1000));
 		param.put("pollingWaitSeconds", Integer.toString(pollingWaitSeconds) );
