@@ -65,7 +65,8 @@ public class CMQHttp {
             if (this.url != url)
                 this.newHttpConnection(url);
 
-			this.connection.setConnectTimeout(timeout+userTimeout);
+            this.connection.setConnectTimeout(timeout+userTimeout);
+            this.connection.setReadTimeout(timeout+userTimeout);
 	
 			if (method.equals("POST")) {
 				((HttpURLConnection)this.connection).setRequestMethod("POST");
