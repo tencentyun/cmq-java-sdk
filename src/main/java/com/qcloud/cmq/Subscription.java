@@ -112,8 +112,8 @@ public class Subscription {
 		    meta.Endpoint = jsonObj.getString("endpoint");
         if(jsonObj.has("notifyStrategy"))
 		    meta.NotifyStrategy = jsonObj.getString("notifyStrategy");
-        if(jsonObj.has("notifyContTentFormat"))
-		    meta.NotifyContentFormat = jsonObj.getString("notifyContTentFormat");
+        if(jsonObj.has("notifyContentFormat"))
+		    meta.NotifyContentFormat = jsonObj.getString("notifyContentFormat");
         if(jsonObj.has("protocol"))
 		    meta.Protocal = jsonObj.getString("protocol");
         if(jsonObj.has("createTime"))
