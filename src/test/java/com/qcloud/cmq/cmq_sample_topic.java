@@ -23,7 +23,7 @@ public class cmq_sample_topic {
 			// create topic
 			System.out.println("init account ");
 			String topicName="topic-test";
-			account.createTopic(topicName, 65536);
+			account.createTopic(topicName, 1024*1024);
 
 			System.out.println("create topic");
 			// get topic meta

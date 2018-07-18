@@ -186,8 +186,8 @@ public class Account{
 			param.put("topicName",topicName);
 
         param.put("filterType",Integer.toString(filterType));
-		if(maxMsgSize < 1  || maxMsgSize > 65536)
-		    throw new CMQClientException("Invalid parameter: maxMsgSize > 65536 or maxMsgSize < 1");
+		if(maxMsgSize < 1024  || maxMsgSize > 1024 * 1024)
+		    throw new CMQClientException("Invalid parameter: maxMsgSize > 1024KB or maxMsgSize < 1KB");
 
 		param.put("maxMsgSize",Integer.toString(maxMsgSize));
 		String result = this.client.call("CreateTopic", param);
