@@ -39,8 +39,8 @@ public class Topic {
 	     */
 	    public void setTopicAttributes(final int maxMsgSize)throws Exception
 	    {
-	    	if (maxMsgSize < 0  || maxMsgSize >65536)
-	    		throw new CMQClientException("Invalid parameter maxMsgSize < 0 or maxMsgSize > 65536");
+	    	if (maxMsgSize < 1024  || maxMsgSize > 1048576)
+	    		throw new CMQClientException("Invalid parameter maxMsgSize < 1KB or maxMsgSize > 1024KB");
 	    	
 	    	TreeMap<String, String> param = new TreeMap<String, String>();
 

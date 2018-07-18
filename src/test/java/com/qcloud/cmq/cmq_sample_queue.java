@@ -23,7 +23,7 @@ public class cmq_sample_queue {
 		QueueMeta meta = new QueueMeta();
 		meta.pollingWaitSeconds = 10;
 		meta.visibilityTimeout = 10;
-		meta.maxMsgSize = 65536;
+		meta.maxMsgSize = 1048576;
 		meta.msgRetentionSeconds = 345600;
 		account.createQueue("queue-test10",meta);
 		System.out.println("queue-test10 created");

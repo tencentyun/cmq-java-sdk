@@ -186,7 +186,7 @@ public class Account{
 			param.put("topicName",topicName);
 
         param.put("filterType",Integer.toString(filterType));
-		if(maxMsgSize < 1024  || maxMsgSize > 1024 * 1024)
+		if(maxMsgSize < 1024  || maxMsgSize > 1048576)
 		    throw new CMQClientException("Invalid parameter: maxMsgSize > 1024KB or maxMsgSize < 1KB");
 
 		param.put("maxMsgSize",Integer.toString(maxMsgSize));

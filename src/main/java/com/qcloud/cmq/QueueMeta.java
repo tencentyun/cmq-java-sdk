@@ -7,7 +7,7 @@ public class QueueMeta {
 	/** 缺省消息可见性超时 */
 	public static final int DEFAULT_VISIBILITY_TIMEOUT = 30;
 	/** 缺省消息最大长度，单位字节 */
-	public static final int DEFAULT_MAX_MSG_SIZE = 65536;
+	public static final int DEFAULT_MAX_MSG_SIZE = 1048576;
 	/** 缺省消息保留周期，单位秒 */
 	public static final int DEFAULT_MSG_RETENTION_SECONDS = 345600;
 	

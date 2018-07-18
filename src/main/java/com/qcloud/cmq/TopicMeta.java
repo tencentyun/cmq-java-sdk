@@ -11,7 +11,7 @@ package com.qcloud.cmq;
 public class TopicMeta {
 	// 当前该主题的消息堆积数
 	public  int msgCount;
-	// 消息最大长度，取值范围1024-65536 Byte（即1-64K），默认65536
+	// 消息最大长度，取值范围1024-1048576 Byte（即1-1024K），默认1048576
 	public  int maxMsgSize;
 	//消息在主题中最长存活时间，从发送到该主题开始经过此参数指定的时间后，
 	//不论消息是否被成功推送给用户都将被删除，单位为秒。固定为一天，该属性不能修改。
@@ -26,7 +26,7 @@ public class TopicMeta {
 	public TopicMeta()
 	{
 		msgCount = 0;
-		maxMsgSize= 65536;
+		maxMsgSize= 1048576;
 		msgRetentionSeconds = 86400;
 		createTime = 0;
 		lastModifyTime = 0;
