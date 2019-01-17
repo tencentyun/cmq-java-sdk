@@ -1,4 +1,4 @@
-import com.qcloud.cmq.*;
+package com.qcloud.cmq;
 
 import java.lang.*;
 import java.util.ArrayList;

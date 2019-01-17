@@ -40,7 +40,7 @@ public class Subscription {
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
     
     }
 	/**
@@ -83,7 +83,7 @@ public class Subscription {
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class Subscription {
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 
 		SubscriptionMeta meta = new SubscriptionMeta();
 		meta.FilterTag = new Vector<String>();

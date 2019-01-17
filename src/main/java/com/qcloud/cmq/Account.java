@@ -82,7 +82,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 
 		int totalCount = jsonObj.getInt("totalCount");
 		JSONArray jsonArray = jsonObj.getJSONArray("queueList");
@@ -194,7 +194,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 
 
@@ -216,7 +216,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 
 
@@ -244,7 +244,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 
 
 		int totalCount = jsonObj.getInt("totalCount");
@@ -339,7 +339,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 
 
@@ -367,7 +367,7 @@ public class Account{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 
 

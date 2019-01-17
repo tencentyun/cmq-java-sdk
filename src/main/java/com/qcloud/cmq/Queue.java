@@ -53,7 +53,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 
 		QueueMeta meta = new QueueMeta();
 		meta.maxMsgHeapNum = jsonObj.getInt("maxMsgHeapNum");
@@ -114,7 +114,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 		
 		return jsonObj.getString("msgId");
 	}
@@ -149,7 +149,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 		
 		ArrayList<String> vtMsgId = new ArrayList<String>();
 		JSONArray jsonArray = jsonObj.getJSONArray("msgList");
@@ -188,7 +188,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 		
 		Message msg = new Message();
 		msg.msgId = jsonObj.getString("msgId");
@@ -229,7 +229,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 		
 		ArrayList<Message> vtMessage = new ArrayList<Message>();
 		
@@ -269,7 +269,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 	
 	/**
@@ -296,7 +296,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 	
 	
@@ -320,7 +320,7 @@ public class Queue{
 		JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"),jsonObj.getString("requestId"));
+			throw new CMQServerException(code,jsonObj.getString("message"));
 	}
 	
 }
