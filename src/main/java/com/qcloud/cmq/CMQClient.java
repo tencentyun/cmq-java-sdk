@@ -27,7 +27,7 @@ public class CMQClient {
 	
 	public void setSignMethod(String signMethod)
 	{
-		if(signMethod == "sha1" || signMethod == "sha256")
+		if(signMethod.equals("sha1") || signMethod.equals("sha256"))
 		    this.signMethod = signMethod;
 		else
 		    throw new CMQClientException("Only support sha256 or sha1");
@@ -40,7 +40,7 @@ public class CMQClient {
 			param.put("SecretId", this.secretId);
 			param.put("Timestamp", Long.toString(System.currentTimeMillis() / 1000));
 			param.put("RequestClient", this.CURRENT_VERSION);
-			if (this.signMethod =="sha256")
+			if (this.signMethod.equals("sha256"))
 			    param.put("SignatureMethod","HmacSHA256");
 			else
 				param.put("SignatureMethod","HmacSHA1");

@@ -57,7 +57,7 @@ public class CMQTool {
     		throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException 
     {
 		Mac mac ; 
-		if( method == "sha1")
+		if( method.equals("sha1"))
 		{
            mac = Mac.getInstance(HMAC_ALGORITHM);
 		}
