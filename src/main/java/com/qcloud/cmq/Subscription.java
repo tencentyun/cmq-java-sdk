@@ -125,19 +125,23 @@ public class Subscription {
 	    if(jsonObj.has("filterTag"))
         {
 		    JSONArray jsonArray = jsonObj.getJSONArray("filterTag");
+		    if (jsonArray.length() > 0 && meta.FilterTag == null) {
+			    meta.FilterTag = new Vector<>();
+		    }
 	 	    for(int i=0;i<jsonArray.length();i++)
 		    {	
-			    JSONObject obj = (JSONObject)jsonArray.get(i);
-			    meta.FilterTag.add(obj.toString());
+			    meta.FilterTag.add(jsonArray.getString(i));
 	    	} 
         }
 		if(jsonObj.has("bindingKey"))
         {
 		    JSONArray jsonArray = jsonObj.getJSONArray("bindingKey");
+			if (jsonArray.length() > 0 && meta.bindingKey == null) {
+				meta.bindingKey = new Vector<>();
+			}
 	 	    for(int i=0;i<jsonArray.length();i++)
 		    {	
-			    JSONObject obj = (JSONObject)jsonArray.get(i);
-			    meta.bindingKey.add(obj.toString());
+			    meta.bindingKey.add(jsonArray.getString(i));
 	    	} 
         }
 	
