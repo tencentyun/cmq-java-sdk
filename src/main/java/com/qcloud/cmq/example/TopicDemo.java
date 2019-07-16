@@ -8,9 +8,9 @@ import java.util.Vector;
 public class TopicDemo {
     public static void main(String[] args){
         // 请在腾讯云官网查看 id ,key endpoint
-        String secretId="AKIDlRs3zfTGBqKZYIF35rOhmbAE3dx1LZzF";
-        String secretKey="DBuNaaLq55pLbcS3QZS6GAoGSO4VgbGn";
-        String endpoint = "https://cmq-topic-gz.api.qcloud.com";
+        String secretId="";
+        String secretKey="";
+        String endpoint = "https://cmq-topic-{$region}.api.qcloud.com";
         try {
             int batchMessageSize = 5 ;
 
@@ -43,8 +43,9 @@ public class TopicDemo {
 
             // 创建 sub
 //            System.out.println("---------------- create sub ----------------");
+//            String queueName = "test";
 //            String subscriptionName = "sub-test";
-//            String Endpoint = "qiyuan-test";
+//            String Endpoint = queueName;
 //            String Protocol = "queue";
 //            account.createSubscribe(topicName,subscriptionName, Endpoint, Protocol);
 

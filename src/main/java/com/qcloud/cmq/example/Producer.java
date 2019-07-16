@@ -11,9 +11,10 @@ import java.util.List;
 public class Producer {
     public static void main(String[] args){
         //从腾讯云官网查询的云API密钥信息
-        String secretId="AKIDlRs3zfTGBqKZYIF35rOhmbAE3dx1LZzF";
-        String secretKey="DBuNaaLq55pLbcS3QZS6GAoGSO4VgbGn";
-        String endpoint = "https://cmq-queue-gz.api.qcloud.com";
+        String secretId="";
+        String secretKey="";
+        String endpoint = "https://cmq-queue-{$region}.api.qcloud.com";
+        String queueName = "test";
 
         Account account = new Account(endpoint,secretId, secretKey);
 
@@ -22,7 +23,6 @@ public class Producer {
 //            创建新队列
 
 //            System.out.println("---------------create queue ...---------------");
-//            String queueName = "name";
 //            QueueMeta meta = new QueueMeta();
 //            meta.pollingWaitSeconds = 10;
 //            meta.visibilityTimeout = 10;
@@ -50,7 +50,6 @@ public class Producer {
 
             // 获得队列实例（此处直接使用现有队列进行操作，也可按照上面的注释创建队列）
             System.out.println("--------------- queue[qiyuan-test] ---------------");
-            String queueName = "qiyuan-test";
             Queue queue = account.getQueue(queueName);
 
             // 设置队列属性

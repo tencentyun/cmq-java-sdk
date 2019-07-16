@@ -10,14 +10,15 @@ import java.util.List;
 
 public class Consumer {
     public static void main(String[] args){
-        String secretId="AKIDlRs3zfTGBqKZYIF35rOhmbAE3dx1LZzF";
-        String secretKey="DBuNaaLq55pLbcS3QZS6GAoGSO4VgbGn";
-        String endpoint = "https://cmq-queue-gz.api.qcloud.com";
+        String secretId="";
+        String secretKey="";
+        String endpoint = "https://cmq-queue-{$region}.api.qcloud.com";
+        String queueName = "test";
 
         Account account = new Account(endpoint,secretId, secretKey);
         //获得队列实例
         System.out.println("--------------- queue[qiyuan-test] ---------------");
-        Queue queue = account.getQueue("qiyuan-test");
+        Queue queue = account.getQueue(queueName);
         try{
             //接收单条消息
             System.out.println("---------------recv message ...---------------");
