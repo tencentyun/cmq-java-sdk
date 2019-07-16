@@ -28,7 +28,7 @@ public class Producer {
 //            meta.visibilityTimeout = 10;
 //            meta.maxMsgSize = 1048576;
 //            meta.msgRetentionSeconds = 345600;
-//            account.createQueue(queueName,meta);
+//            Queue queue = account.createQueue(queueName,meta);
 //            System.out.println(queueName + " created");
 
 //            列出当前帐号下所有队列名字
