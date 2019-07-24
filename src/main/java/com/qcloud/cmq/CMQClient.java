@@ -1,5 +1,6 @@
 package com.qcloud.cmq;
 
+import java.net.HttpURLConnection;
 import java.util.TreeMap;
 import java.util.Random;
 import java.net.URLEncoder;
@@ -93,8 +94,9 @@ public class CMQClient {
 			{
 			  userTimeout=Integer.parseInt(param.get("UserpollingWaitSeconds"));
 			}
-			rsp = this.cmqHttp.request(this.method,url,req,userTimeout);
-			//System.out.println("rsp:"+rsp);
+//			rsp = this.cmqHttp.request(this.method,url,req,userTimeout);
+			rsp = HttpUtil.request(this.method, url, req, userTimeout);
+			System.out.println("rsp:"+rsp);
 		
 		}catch(Exception e){
 			throw e;

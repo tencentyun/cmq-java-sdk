@@ -126,7 +126,7 @@ public class Subscription {
         {
 		    JSONArray jsonArray = jsonObj.getJSONArray("filterTag");
 		    if (jsonArray.length() > 0 && meta.FilterTag == null) {
-			    meta.FilterTag = new Vector<>();
+			    meta.FilterTag = new Vector<String>();
 		    }
 	 	    for(int i=0;i<jsonArray.length();i++)
 		    {	
@@ -137,7 +137,7 @@ public class Subscription {
         {
 		    JSONArray jsonArray = jsonObj.getJSONArray("bindingKey");
 			if (jsonArray.length() > 0 && meta.bindingKey == null) {
-				meta.bindingKey = new Vector<>();
+				meta.bindingKey = new Vector<String>();
 			}
 	 	    for(int i=0;i<jsonArray.length();i++)
 		    {	

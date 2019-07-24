@@ -62,8 +62,8 @@ public class CMQHttp {
 		String result = "";
 		BufferedReader in = null;
 		try{
-            if (!this.url.equals(url))
-                this.newHttpConnection(url);
+//            if (!this.url.equals(url))
+			this.newHttpConnection(url);
 
             this.connection.setConnectTimeout(timeout+userTimeout);
             this.connection.setReadTimeout(timeout+userTimeout);
