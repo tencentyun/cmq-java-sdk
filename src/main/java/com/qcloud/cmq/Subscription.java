@@ -36,11 +36,8 @@ public class Subscription {
 		param.put("topicName",this.topicName);
 		param.put("subscriptionName", this.subscriptionName);
 		String result = this.client.call("ClearSUbscriptionFIlterTags",param);
-		
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+
+		CMQTool.checkResult(result);
     
     }
 	/**
@@ -79,11 +76,8 @@ public class Subscription {
 		}
 	
 		String result = this.client.call("SetSubscriptionAttributes", param);
-		
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+
+		CMQTool.checkResult(result);
 	}
 	
 	/**
@@ -102,9 +96,7 @@ public class Subscription {
 		String result = this.client.call("GetSubscriptionAttributes", param);
 		
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 
 		SubscriptionMeta meta = new SubscriptionMeta();
 		meta.FilterTag = new Vector<String>();

@@ -29,7 +29,16 @@ public class Topic {
 	    this.topicName = topicName;
 	    this.client = client;
 		}
-	    
+		/**
+		 * TODO set topic attributes
+		 *
+		 * @param maxMsgSize  int
+		 * @throws Exception
+		 */
+		public void setTopicAttributes(final int maxMsgSize)throws Exception
+		{
+			setTopicAttributes(maxMsgSize,CMQTool.userPollingWaitMillSeconds);
+		}
 	    
 	    /**
 	     * TODO set topic attributes
@@ -37,7 +46,7 @@ public class Topic {
 	     * @param maxMsgSize  int 
 	     * @throws Exception  
 	     */
-	    public void setTopicAttributes(final int maxMsgSize)throws Exception
+	    public void setTopicAttributes(final int maxMsgSize,int pollingWaitMillSeconds)throws Exception
 	    {
 	    	if (maxMsgSize < 1024  || maxMsgSize > 1048576)
 	    		throw new CMQClientException("Invalid parameter maxMsgSize < 1KB or maxMsgSize > 1024KB");
@@ -45,17 +54,28 @@ public class Topic {
 	    	TreeMap<String, String> param = new TreeMap<String, String>();
 
 			param.put("topicName",this.topicName);
+			if(pollingWaitMillSeconds > 0){
+				param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+			}
 			
 			if(maxMsgSize > 0)
 				param.put("maxMsgSize",Integer.toString(maxMsgSize));
 			
 			String result = this.client.call("SetTopicAttributes", param);
-			JSONObject jsonObj = new JSONObject(result);
-			int code = jsonObj.getInt("code");
-			if(code != 0)
-				throw new CMQServerException(code,jsonObj.getString("message"));
+			CMQTool.checkResult(result);
 	    }
-	    
+
+
+		/**
+		 * TODO get topic attributes.
+		 *
+		 * @return  return topic meta object
+		 * @throws Exception
+		 */
+		public TopicMeta getTopicAttributes() throws Exception
+		{
+			return getTopicAttributes(CMQTool.userPollingWaitMillSeconds);
+		}
 	    
 	    /**
 	     * TODO get topic attributes.
@@ -63,17 +83,17 @@ public class Topic {
 	     * @return  return topic meta object
 	     * @throws Exception
 	     */
-	    public TopicMeta getTopicAttributes() throws Exception
+	    public TopicMeta getTopicAttributes(int pollingWaitMillSeconds) throws Exception
 	    {
 	    	TreeMap<String, String> param = new TreeMap<String, String>();
 
-			param.put("topicName",this.topicName);					
-			
+			param.put("topicName",this.topicName);
+			if(pollingWaitMillSeconds > 0){
+				param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+			}
 			String result = this.client.call("GetTopicAttributes", param);
 			JSONObject jsonObj = new JSONObject(result);
-			int code = jsonObj.getInt("code");
-			if(code != 0)
-				throw new CMQServerException(code,jsonObj.getString("message"));
+			CMQTool.checkResult(result);
 			
 			TopicMeta meta = new TopicMeta();
 			meta.msgCount = jsonObj.getInt("msgCount");
@@ -101,6 +121,19 @@ public class Topic {
 	    {
 	    	return publishMessage(message, null,routingKey);
 	    }
+
+		/**
+		 * publish message .
+		 *
+		 * @param msg  String message body
+		 * @param vTagList Vector<String>  message tag
+		 * @return  msgId String
+		 * @throws Exception
+		 */
+		public String publishMessage(String msg, List<String> vTagList,String routingKey) throws Exception
+		{
+			return publishMessage(msg,vTagList,routingKey,CMQTool.userPollingWaitMillSeconds);
+		}
 	    
 	    /**
 	     * publish message .
@@ -110,12 +143,15 @@ public class Topic {
  	     * @return  msgId String  
 	     * @throws Exception
 	     */
-	    public String publishMessage(String msg, List<String> vTagList,String routingKey) throws Exception
+	    public String publishMessage(String msg, List<String> vTagList,String routingKey,int pollingWaitMillSeconds) throws Exception
 	    {
 	    	TreeMap<String, String> param = new TreeMap<String, String>();
 
 			param.put("topicName",this.topicName);
 			param.put("msgBody",msg);
+			if(pollingWaitMillSeconds > 0){
+				param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+			}
 			if(routingKey != null)
                 param.put("routingKey",routingKey);
 			
@@ -129,9 +165,7 @@ public class Topic {
 			
 			String result = this.client.call("PublishMessage", param);
 			JSONObject jsonObj = new JSONObject(result);
-			int code = jsonObj.getInt("code");
-			if(code != 0)
-				throw new CMQServerException(code,jsonObj.getString("message"));
+			CMQTool.checkResult(result);
 			return jsonObj.getString("msgId");
 	    }
 	    
@@ -150,16 +184,30 @@ public class Topic {
 	    {
 	    	return batchPublishMessage(vMsgList,null,routingKey);
 	    }
+
+	/**
+	 * batch publish message
+	 *
+	 * @param vMsgList   message array
+	 * @param vTagList   message tag array
+	 * @return message handles array
+	 * @throws Exception
+	 */
+	public Vector<String> batchPublishMessage(List<String> vMsgList,List<String> vTagList,String routingKey) throws Exception
+	{
+		return batchPublishMessage(vMsgList,vTagList,routingKey,CMQTool.userPollingWaitMillSeconds);
+	}
 	    
 	    /**
 	     * batch publish message 
 	     *
 	     * @param vMsgList   message array
 	     * @param vTagList   message tag array
+		 * @param pollingWaitMillSeconds 请求等待时间
 	     * @return message handles array
 	     * @throws Exception
 	     */
-	    public Vector<String> batchPublishMessage(List<String> vMsgList,List<String> vTagList,String routingKey ) throws Exception
+	    public Vector<String> batchPublishMessage(List<String> vMsgList,List<String> vTagList,String routingKey,int pollingWaitMillSeconds) throws Exception
 	    {
 	    	
 	    	TreeMap<String, String> param = new TreeMap<String, String>();
@@ -167,6 +215,10 @@ public class Topic {
 			param.put("topicName",this.topicName);
 			if(routingKey != null)
                 param.put("routingKey",routingKey);
+
+			if(pollingWaitMillSeconds > 0){
+				param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+			}
 			if(vMsgList != null )
 			{
 				for(int i = 0 ; i< vMsgList.size() ; ++i)
@@ -184,9 +236,7 @@ public class Topic {
 			
 			String result = this.client.call("BatchPublishMessage", param);
 			JSONObject jsonObj = new JSONObject(result);
-			int code = jsonObj.getInt("code");
-			if(code != 0)
-				throw new CMQServerException(code,jsonObj.getString("message"));
+			CMQTool.checkResult(result);
 			
 			JSONArray jsonArray = jsonObj.getJSONArray("msgList");
 			
@@ -200,10 +250,25 @@ public class Topic {
 			return vmsgId;
 
 	    }
+
 	/**
 	 * TODO list subscription by topic.
 	 *
-	 * @param totalCount           int
+	 * @param offset               int
+	 * @param limit                int
+	 * @param searchWord           String
+	 * @param vSubscriptionList    List<String>
+	 * @return totalCount          int
+	 * @throws Exception
+	 */
+	public int ListSubscription(final  int offset , int limit ,
+								final String searchWord, List< String>vSubscriptionList) throws Exception
+	{
+		return ListSubscription(offset,limit,searchWord,vSubscriptionList,CMQTool.userPollingWaitMillSeconds);
+	}
+	/**
+	 * TODO list subscription by topic.
+	 *
 	 * @param offset               int
 	 * @param limit                int
 	 * @param searchWord           String
@@ -213,7 +278,7 @@ public class Topic {
 	 */
 	public int ListSubscription(final  int offset , int limit ,
 			final String searchWord, List< String>vSubscriptionList
-			) throws Exception
+			,int pollingWaitMillSeconds) throws Exception
 	{
 		TreeMap<String, String> param = new TreeMap<String, String>();
 		param.put("topicName", this.topicName);
@@ -224,11 +289,13 @@ public class Topic {
 		if(limit > 0 )
 			param.put("limit",Integer.toString(limit));
 
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+		}
+
 		String result = this.client.call("ListSubscriptionByTopic", param);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 
 		int totalCount = jsonObj.getInt("totalCount");
 		JSONArray jsonArray = jsonObj.getJSONArray("subscriptionList");

@@ -1,5 +1,7 @@
 package com.qcloud.cmq;
 
+import com.qcloud.cmq.Json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -7,6 +9,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class CMQTool {
+
+	public static int userPollingWaitMillSeconds = 5000;
+	public static String waitTimeKey = "UserpollingWaitSeconds";
 	
 	private static char[] b64c = new char[] { 'A', 'B', 'C', 'D',
 			'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
@@ -70,5 +75,20 @@ public class CMQTool {
         byte[] digest = mac.doFinal(src.getBytes(CONTENT_CHARSET));
         return new String(base64_encode(digest));
     }
+
+
+    public static void checkResult(String result){
+		if(result == null || result.trim().equals("")){
+			throw new CMQServerException(0,"result is empty");
+		}
+		JSONObject jsonObj = new JSONObject(result);
+		if(jsonObj.isNull("code")){
+			throw new CMQServerException(0,"cann't find field code in result:"+result);
+		}
+		int code = jsonObj.getInt("code");
+		if(code != 0) {
+			throw new CMQServerException(code, jsonObj.getString("message"));
+		}
+	}
 		
 }

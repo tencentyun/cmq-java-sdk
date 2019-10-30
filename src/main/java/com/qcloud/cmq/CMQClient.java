@@ -1,10 +1,13 @@
 package com.qcloud.cmq;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.HttpURLConnection;
 import java.util.TreeMap;
 import java.util.Random;
 import java.net.URLEncoder;
 
+@Slf4j
 public class CMQClient {
 	protected String CURRENT_VERSION = "SDK_JAVA_1.3";
 	
@@ -36,6 +39,19 @@ public class CMQClient {
 	public String call(String action, TreeMap<String,String> param) throws Exception{
 		String rsp = "";
 		try{
+			int userTimeout=0;;
+			if(param.containsKey(CMQTool.waitTimeKey)){
+				try{
+					userTimeout = Integer.parseInt(param.get(CMQTool.waitTimeKey));
+					if(userTimeout < 0){
+						userTimeout = 0;
+					}
+					param.remove(CMQTool.waitTimeKey);
+				}catch (Exception e){
+
+				}
+			}
+
 			param.put("Action", action);
 			param.put("Nonce", Integer.toString(new Random().nextInt(java.lang.Integer.MAX_VALUE)));
 			param.put("SecretId", this.secretId);
@@ -89,14 +105,18 @@ public class CMQClient {
 			}
 			
 			//System.out.println("url:"+url);
-			int userTimeout=0;
-			if(param.containsKey("UserpollingWaitSeconds"))
+
+			/*if(param.containsKey(CMQTool.waitTimeKey))
 			{
-			  userTimeout=Integer.parseInt(param.get("UserpollingWaitSeconds"));
-			}
+			  userTimeout=Integer.parseInt(param.get(CMQTool.waitTimeKey));
+			}*/
+
+
 //			rsp = this.cmqHttp.request(this.method,url,req,userTimeout);
+
 			rsp = HttpUtil.request(this.method, url, req, userTimeout);
-			System.out.println("rsp:"+rsp);
+
+			//System.out.println("rsp:"+rsp);
 		
 		}catch(Exception e){
 			throw e;

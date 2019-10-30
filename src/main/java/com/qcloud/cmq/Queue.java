@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.lang.Integer;
-
-import com.qcloud.cmq.*;
+import lombok.extern.slf4j.Slf4j;
 import com.qcloud.cmq.Json.*;
 
 /**
@@ -14,6 +13,7 @@ import com.qcloud.cmq.Json.*;
  * @author York.
  *         Created 2016年9月26日.
  */
+@Slf4j
 public class Queue{
 	protected String queueName;
 	protected CMQClient client;
@@ -23,7 +23,7 @@ public class Queue{
 		this.queueName = queueName;
 		this.client = client;
 	}
-	
+
 	/**
 	 * 设置队列属性
 	 *
@@ -32,6 +32,17 @@ public class Queue{
 	 * @throws CMQServerException
 	 */
 	public void setQueueAttributes(QueueMeta meta) throws Exception {
+		setQueueAttributes(meta,CMQTool.userPollingWaitMillSeconds);
+	}
+	
+	/**
+	 * 设置队列属性
+	 *
+	 * @param meta        队列属性参数
+	 * @throws CMQClientException
+	 * @throws CMQServerException
+	 */
+	public void setQueueAttributes(QueueMeta meta,int pollingWaitMillSeconds) throws Exception {
 		TreeMap<String, String> param = new TreeMap<String, String>();
 
 		param.put("queueName",this.queueName);
@@ -48,12 +59,22 @@ public class Queue{
 			param.put("msgRetentionSeconds",Integer.toString(meta.msgRetentionSeconds));
 		if(meta.rewindSeconds > 0)
 			param.put("rewindSeconds",Integer.toString(meta.rewindSeconds));
-		
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey, Integer.toString(CMQTool.userPollingWaitMillSeconds));
+		}
 		String result = this.client.call("SetQueueAttributes", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
+	}
+
+	/**
+	 * 获取队列属性
+	 *
+	 * @return        返回的队列属性参数
+	 * @throws CMQClientException
+	 * @throws CMQServerException
+	 */
+	public QueueMeta getQueueAttributes() throws Exception {
+		return getQueueAttributes(CMQTool.userPollingWaitMillSeconds);
 	}
 	
 	/**
@@ -63,15 +84,16 @@ public class Queue{
 	 * @throws CMQClientException
 	 * @throws CMQServerException
 	 */
-	public QueueMeta getQueueAttributes() throws Exception {
+	public QueueMeta getQueueAttributes(int pollingWaitMillSeconds) throws Exception {
 		TreeMap<String, String> param = new TreeMap<String, String>();
 
 		param.put("queueName",this.queueName);
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey, Integer.toString(CMQTool.userPollingWaitMillSeconds));
+		}
 		String result = this.client.call("GetQueueAttributes", param);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 
 		QueueMeta meta = new QueueMeta();
 		meta.maxMsgHeapNum = jsonObj.getInt("maxMsgHeapNum");
@@ -101,20 +123,21 @@ public class Queue{
 	 * @throws CMQServerException
 	 */
     public String sendMessage(String msgBody) throws Exception {
-        return sendMessage(msgBody, 0);
+        return sendMessage(msgBody, 0,CMQTool.userPollingWaitMillSeconds);
     }
-	public String sendMessage(String msgBody ,int delayTime) throws Exception {
+	public String sendMessage(String msgBody ,int delayTime,int pollingWaitMillSeconds) throws Exception {
 		TreeMap<String, String> param = new TreeMap<String, String>();
 
 		param.put("queueName",this.queueName);
 		param.put("msgBody",msgBody);
         param.put("delaySeconds",Integer.toString(delayTime));
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey, Integer.toString(CMQTool.userPollingWaitMillSeconds));
+		}
 		
 		String result = this.client.call("SendMessage", param);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 		
 		return jsonObj.getString("msgId");
 	}
@@ -128,9 +151,9 @@ public class Queue{
 	 * @throws CMQServerException
 	 */
     public List<String> batchSendMessage(List<String> vtMsgBody) throws Exception {
-        return batchSendMessage(vtMsgBody, 0);
+        return batchSendMessage(vtMsgBody, 0,CMQTool.userPollingWaitMillSeconds);
     }
-	public List<String> batchSendMessage(List<String> vtMsgBody,int delayTime) throws Exception {
+	public List<String> batchSendMessage(List<String> vtMsgBody,int delayTime,int pollingWaitMillSeconds) throws Exception {
 
 		if(vtMsgBody.isEmpty()  || vtMsgBody.size() > 16)
 			throw new CMQClientException("Error: message size is empty or more than 16");
@@ -144,12 +167,12 @@ public class Queue{
 			param.put(k,vtMsgBody.get(i));
 		}
 		param.put("delaySeconds", Integer.toString(delayTime));
-
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey, Integer.toString(CMQTool.userPollingWaitMillSeconds));
+		}
 		String result = this.client.call("BatchSendMessage", param);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 		
 		ArrayList<String> vtMsgId = new ArrayList<String>();
 		JSONArray jsonArray = jsonObj.getJSONArray("msgList");
@@ -176,19 +199,17 @@ public class Queue{
 	    param.put("queueName",this.queueName);
         if(pollingWaitSeconds >=  0)
         {
-		param.put("UserpollingWaitSeconds",Integer.toString(pollingWaitSeconds *1000));
+			param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitSeconds*1000));
 		param.put("pollingWaitSeconds", Integer.toString(pollingWaitSeconds) );
         }
         else
         {
-		param.put("UserpollingWaitSeconds",Integer.toString(30000));
+			param.put(CMQTool.waitTimeKey,Integer.toString(CMQTool.userPollingWaitMillSeconds));
         }
 		
 		String result = this.client.call("ReceiveMessage", param);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 		
 		Message msg = new Message();
 		msg.msgId = jsonObj.getString("msgId");
@@ -206,7 +227,7 @@ public class Queue{
 	 * 批量获取消息
 	 *
 	 * @param numOfMsg               准备获取消息数
-	 * @param pollingWaitSeconds     请求最长的Polling等待时间
+	 * @param pollingWaitSeconds     请求最长的Polling等待时间(单位：秒)
 	 * @return                       服务器返回消息列表
 	 * @throws CMQClientException
 	 * @throws CMQServerException
@@ -216,20 +237,20 @@ public class Queue{
 
 		param.put("queueName",this.queueName);
 		param.put("numOfMsg",Integer.toString(numOfMsg));
+
+
 		if(pollingWaitSeconds >= 0)
         {
-		param.put("UserpollingWaitSeconds",Integer.toString(pollingWaitSeconds*1000));
-		param.put("pollingWaitSeconds", Integer.toString(pollingWaitSeconds) );
+			param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitSeconds*1000));
+			param.put("pollingWaitSeconds", Integer.toString(pollingWaitSeconds));
         }
         else
         {
-		param.put("UserpollingWaitSeconds",Integer.toString(30000));
+			param.put(CMQTool.waitTimeKey,Integer.toString(CMQTool.userPollingWaitMillSeconds));
         }
 		String result = this.client.call("BatchReceiveMessage", param);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 		
 		ArrayList<Message> vtMessage = new ArrayList<Message>();
 		
@@ -251,7 +272,7 @@ public class Queue{
 		
 		return vtMessage;
 	}
-	
+
 	/**
 	 * 删除消息
 	 *
@@ -260,32 +281,56 @@ public class Queue{
 	 * @throws CMQServerException
 	 */
 	public void deleteMessage(String receiptHandle) throws Exception {
+		deleteMessage(receiptHandle,CMQTool.userPollingWaitMillSeconds);
+	}
+	
+	/**
+	 * 删除消息
+	 *
+	 * @param receiptHandle     消息句柄,获取消息时由服务器返回
+	 * @throws CMQClientException
+	 * @throws CMQServerException
+	 */
+	public void deleteMessage(String receiptHandle,int pollingWaitMillSeconds) throws Exception {
 		TreeMap<String, String> param = new TreeMap<String, String>();
 
 		param.put("queueName",this.queueName);
 		param.put("receiptHandle",receiptHandle);
-		
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+		}
 		String result = this.client.call("DeleteMessage", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
+	}
+
+	/**
+	 * 批量删除消息
+	 *
+	 * @param  vtReceiptHandle    消息句柄列表，获取消息时由服务器返回
+	 * @throws CMQClientException
+	 * @throws CMQServerException
+	 */
+	public void batchDeleteMessage(List<String> vtReceiptHandle) throws Exception {
+		batchDeleteMessage(vtReceiptHandle,CMQTool.userPollingWaitMillSeconds);
 	}
 	
 	/**
 	 * 批量删除消息
 	 *
-	 * @param receiptHandle     消息句柄列表，获取消息时由服务器返回
+	 * @param  vtReceiptHandle    消息句柄列表，获取消息时由服务器返回
 	 * @throws CMQClientException
 	 * @throws CMQServerException
 	 */
-	public void batchDeleteMessage(List<String> vtReceiptHandle) throws Exception {
+	public void batchDeleteMessage(List<String> vtReceiptHandle,int pollingWaitMillSeconds) throws Exception {
 		if(vtReceiptHandle.isEmpty())
 			return;
 		
 		TreeMap<String, String> param = new TreeMap<String, String>();
 
 		param.put("queueName",this.queueName);
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+		}
 		for(int i=0;i<vtReceiptHandle.size();i++)
 		{
 			String k = "receiptHandle." + Integer.toString(i+1);
@@ -293,13 +338,19 @@ public class Queue{
 		}
 		
 		String result = this.client.call("BatchDeleteMessage", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
-	
-	
+
+	/**
+	 * 回溯队列
+	 * @param backTrackingTime
+	 * @throws CMQClientException
+	 * @throws CMQServerException
+	 */
+
+	public void rewindQueue(int backTrackingTime) throws Exception {
+		rewindQueue(backTrackingTime,CMQTool.userPollingWaitMillSeconds);
+	}
 	/**
 	 * 回溯队列
 	 * @param backTrackingTime
@@ -307,7 +358,7 @@ public class Queue{
 	 * @throws CMQServerException
 	*/
 	
-	public void rewindQueue(int backTrackingTime) throws Exception {
+	public void rewindQueue(int backTrackingTime,int pollingWaitMillSeconds) throws Exception {
 		if(backTrackingTime  <=0 )
 			return;
 		
@@ -315,12 +366,12 @@ public class Queue{
 
 		param.put("queueName",this.queueName);
 		param.put("startConsumeTime",Integer.toString(backTrackingTime));
+		if(pollingWaitMillSeconds > 0){
+			param.put(CMQTool.waitTimeKey,Integer.toString(pollingWaitMillSeconds));
+		}
 		
 		String result = this.client.call("RewindQueue", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
 	
 }
