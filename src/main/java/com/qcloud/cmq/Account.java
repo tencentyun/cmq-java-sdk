@@ -79,10 +79,11 @@ public class Account{
 			param.put("rewindSeconds",Integer.toString(meta.rewindSeconds));
 
 		String result = this.client.call("CreateQueue", param);
-		JSONObject jsonObj = new JSONObject(result);
+		/*JSONObject jsonObj = new JSONObject(result);
 		int code = jsonObj.getInt("code");
 		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+			throw new CMQServerException(code,jsonObj.getString("message"));*/
+		CMQTool.checkResult(result);
 	}
 
 	/**
@@ -100,10 +101,7 @@ public class Account{
 			param.put("queueName",queueName);
 
 		String result = this.client.call("DeleteQueue", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
 
 	/**
@@ -128,11 +126,8 @@ public class Account{
 			param.put("limit",Integer.toString(limit));
 
 		String result = this.client.call("ListQueue", param);
+		CMQTool.checkResult(result);
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
-
 		int totalCount = jsonObj.getInt("totalCount");
 		JSONArray jsonArray = jsonObj.getJSONArray("queueList");
 		for(int i=0;i<jsonArray.length();i++)
@@ -191,10 +186,7 @@ public class Account{
 
 		param.put("maxMsgSize",Integer.toString(maxMsgSize));
 		String result = this.client.call("CreateTopic", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
 
 
@@ -213,10 +205,7 @@ public class Account{
 			param.put("topicName",topicName);
 
 		String result = this.client.call("DeleteTopic", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
 
 
@@ -241,11 +230,9 @@ public class Account{
 			param.put("limit",Integer.toString(limit));
 
 		String result = this.client.call("ListTopic", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
 
+		CMQTool.checkResult(result);
+		JSONObject jsonObj = new JSONObject(result);
 
 		int totalCount = jsonObj.getInt("totalCount");
 		JSONArray jsonArray = jsonObj.getJSONArray("topicList");
@@ -336,10 +323,7 @@ public class Account{
 		}
 
 		String result = this.client.call("Subscribe", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
 
 
@@ -364,10 +348,7 @@ public class Account{
 			param.put("subscriptionName",subscriptionName);
 
 		String result = this.client.call("Unsubscribe", param);
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 	}
 
 
