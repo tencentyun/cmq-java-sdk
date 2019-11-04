@@ -73,10 +73,16 @@ public class CMQHttp {
 	
 				this.connection.setDoOutput(true);
 				this.connection.setDoInput(true);
-				DataOutputStream out = new DataOutputStream(this.connection.getOutputStream());
-				out.writeBytes(req);
-				out.flush();
-				out.close();
+				DataOutputStream out  = null;
+				try{
+					out = new DataOutputStream(this.connection.getOutputStream());
+					out.writeBytes(req);
+					out.flush();
+				}finally{
+					if(out !=null){
+						out.close();
+					}
+				}
 			}
 
 			this.connection.connect();
