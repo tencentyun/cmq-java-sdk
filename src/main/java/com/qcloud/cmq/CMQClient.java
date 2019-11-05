@@ -8,7 +8,6 @@ public class CMQClient {
 
     protected String CURRENT_VERSION = "SDK_JAVA_1.3";
 
-
     protected CmqConfig cmqConfig;
 
     public CMQClient(CmqConfig cmqConfig) {
@@ -24,7 +23,10 @@ public class CMQClient {
     }
 
     public String call(String action, TreeMap<String, String> param) throws Exception {
-        return call(action, param, new CmqConfig());
+        if(cmqConfig == null){
+            throw new RuntimeException("cmqConfig is null!");
+        }
+        return call(action, param, cmqConfig);
     }
 
     public String call(String action, TreeMap<String, String> param, CmqConfig cmqConfig) throws Exception {
@@ -84,7 +86,7 @@ public class CMQClient {
                 flag = true;
             }
         }
-        rsp = HttpUtil.request(cmqConfig.getMethod(), url, req, cmqConfig);
+        rsp = HttpUtil.request(url, req, cmqConfig);
         return rsp;
     }
 }

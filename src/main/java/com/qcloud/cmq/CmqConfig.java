@@ -15,12 +15,31 @@ public class CmqConfig {
 
     //Whether to print a slow query
     private boolean printSlow = false;
-
     private boolean alwaysPrintResultLog = false;
     //Slow query threshold, unit ms
     private long slowThreshold = 1500;
     //maximum wait time for polling
-    private int pollingTimeout;
+    private int connectTimeout = 1000;
+    private int readTimeout = 1000;
+    //max http Idle Connections
+    private int maxIdleConnections = 10;
+
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public int getMaxIdleConnections() {
+        return maxIdleConnections;
+    }
+
+    public void setMaxIdleConnections(int maxIdleConnections) {
+        this.maxIdleConnections = maxIdleConnections;
+    }
 
     public boolean isAlwaysPrintResultLog() {
         return alwaysPrintResultLog;
@@ -86,12 +105,12 @@ public class CmqConfig {
         this.cmqHttp = cmqHttp;
     }
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
+    public int getConnectTimeout() {
+        return connectTimeout;
     }
 
-    public void setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
     }
 
     public boolean isPrintSlow() {
