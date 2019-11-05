@@ -16,10 +16,11 @@ public class CMQServerException extends RuntimeException {
 
     @Override
     public String toString() {
-	if(httpStatus != 200)
-		return "http status:" + httpStatus;
-	else
-        	return "code:" + errorCode
-                + ", message:" + errorMessage;
+	if(httpStatus != 200) {
+        return "http status:" + httpStatus;
+    } else {
+        return "code:" + errorCode
++ ", message:" + errorMessage;
+    }
     }
 }

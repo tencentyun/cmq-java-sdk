@@ -1,6 +1,6 @@
 package com.qcloud.cmq;
 
-import com.qcloud.cmq.Json.JSONObject;
+import com.qcloud.cmq.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -10,9 +10,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class CMQTool {
 
-	public static int userPollingWaitMillSeconds = 5000;
-	public static String waitTimeKey = "UserpollingWaitSeconds";
-	
 	private static char[] b64c = new char[] { 'A', 'B', 'C', 'D',
 			'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 			'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
@@ -62,7 +59,7 @@ public class CMQTool {
     		throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException 
     {
 		Mac mac ; 
-		if( method.equals("sha1"))
+		if( "sha1".equals(method))
 		{
            mac = Mac.getInstance(HMAC_ALGORITHM);
 		}
@@ -73,12 +70,12 @@ public class CMQTool {
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(CONTENT_CHARSET), mac.getAlgorithm());
         mac.init(secretKey);
         byte[] digest = mac.doFinal(src.getBytes(CONTENT_CHARSET));
-        return new String(base64_encode(digest));
+        return base64_encode(digest);
     }
 
 
     public static void checkResult(String result){
-		if(result == null || result.trim().equals("")){
+		if(result == null || "".equals(result.trim())){
 			throw new CMQServerException(0,"result is empty");
 		}
 		JSONObject jsonObj = new JSONObject(result);

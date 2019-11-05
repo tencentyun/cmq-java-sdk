@@ -1,47 +1,48 @@
 package com.qcloud.cmq;
 
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-@Slf4j
+
 public class HttpUtil {
     public static int timeout = 1000;
-    public static String request(String method, String url, String data, int userTimeout) throws Exception{
+    public static String request(String method, String url, String data, CmqConfig cmqConfig) throws Exception{
         String result = "";
-        if (method.equals("POST")) {
-            result = httpPost(url,data,userTimeout);
+        if ("POST".equals(method)) {
+            result = httpPost(url,data,cmqConfig);
         }
         else{
-            result = httpGet(url, userTimeout);
+            result = httpGet(url, cmqConfig);
         }
         return result;
     }
 
+    private static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
 
-    private static String httpGet(String url, int userTimeout) throws Exception{
+
+    private static String httpGet(String url, CmqConfig cmqConfig) throws Exception{
         String result = null;
-        OkHttpClient client = new OkHttpClient().newBuilder().connectTimeout(userTimeout + timeout, TimeUnit.MILLISECONDS).readTimeout(userTimeout + timeout, TimeUnit.MILLISECONDS).build();
+        OkHttpClient client = new OkHttpClient().newBuilder().connectTimeout(cmqConfig.getPollingTimeout()
+                + timeout, TimeUnit.MILLISECONDS).readTimeout(cmqConfig.getPollingTimeout() + timeout, TimeUnit.MILLISECONDS).build();
         Request request = new Request.Builder().url(url).build();
         long start = System.currentTimeMillis();
         log.debug("request:{} timeout:{}",request.toString(),client.readTimeoutMillis());
         try {
             Response response = client.newCall(request).execute();
-            long interval = System.currentTimeMillis() - start;
+            long duration = System.currentTimeMillis() - start;
             result = response.body().string();
-            if(log.isDebugEnabled()) {
-                log.debug("exec time: {},response:{},request:{}", interval, result, url);
-            }else if(log.isInfoEnabled()){
-                log.info("exec time: {},response:{}", interval, result);
-            }else if(interval > 1000){
-                log.warn("exec time: {},response:{},request:{}", interval, result,url);
-            }else if(interval > 3000){
-                log.error("exec time: {},response:{},request:{}", interval, result,url);
+            if (log.isDebugEnabled()) {
+                log.debug("exec time: {},response:{},request:{}", duration, result, url);
+            } else if (cmqConfig.isAlwaysPrintResultLog()) {
+                log.info("exec time: {},response:{}", duration, result);
+            } else if (duration > cmqConfig.getSlowThreshold()) {
+                log.warn("exec time: {},response:{},request:{}", duration, result, url);
             }
         } catch (Exception e) {
-            long interval = System.currentTimeMillis() - start;
-            log.error("exec time: {},request:{},err:{}", interval,url,e.getMessage());
+            long duration = System.currentTimeMillis() - start;
+            log.error("exec time: {},request:{},err:{}", duration, url, e.getMessage());
             throw e;
         }
         return result;
@@ -54,9 +55,10 @@ public class HttpUtil {
      * @param data  提交的参数为key=value&key1=value1的形式
      * @return
      */
-    private static String httpPost(String url, String data, int userTimeout) throws Exception {
-        String result = null;
-        OkHttpClient httpClient = new OkHttpClient().newBuilder().connectTimeout(userTimeout + timeout, TimeUnit.MILLISECONDS).readTimeout(userTimeout + timeout, TimeUnit.MILLISECONDS).build();
+    private static String httpPost(String url, String data, CmqConfig cmqConfig) throws Exception {
+        String result;
+        OkHttpClient httpClient = new OkHttpClient().newBuilder().connectTimeout(cmqConfig.getPollingTimeout()
+                + timeout, TimeUnit.MILLISECONDS).readTimeout(cmqConfig.getPollingTimeout() + timeout, TimeUnit.MILLISECONDS).build();
         RequestBody requestBody = RequestBody.create(MediaType.parse("*/*;charset=utf-8"), data);
         Request request = new Request.Builder().url(url).post(requestBody).build();
         long start = System.currentTimeMillis();
@@ -64,20 +66,18 @@ public class HttpUtil {
 
         try {
             Response response = httpClient.newCall(request).execute();
-            long interval = System.currentTimeMillis() - start;
+            long duration = System.currentTimeMillis() - start;
             result = response.body().string();
-            if(log.isDebugEnabled()) {
-                log.debug("exec time: {},response:{},request:{}",interval,result,data);
-            }else if(log.isInfoEnabled()){
-                log.info("exec time: {},response:{}", interval, result);
-            }else if(interval > 1000){
-                log.warn("exec time: {},response:{},request:{}", interval, result,data);
-            }else if(interval > 3000){
-                log.error("exec time: {},response:{},request:{}", interval, result,data);
+            if (log.isDebugEnabled()) {
+                log.debug("exec time: {},response:{},request:{}", duration, result, url);
+            } else if (cmqConfig.isAlwaysPrintResultLog()) {
+                log.info("exec time: {},response:{}", duration, result);
+            } else if (duration > cmqConfig.getSlowThreshold()) {
+                log.warn("exec time: {},response:{},request:{}", duration, result, url);
             }
         } catch (Exception e) {
-            long interval = System.currentTimeMillis() - start;
-            log.error("exec time: {},request:{},err:{}", interval,url,e.getMessage());
+            long duration = System.currentTimeMillis() - start;
+            log.error("exec time: {},request:{},err:{}", duration, url, e.getMessage());
             throw e;
         }
         return result;

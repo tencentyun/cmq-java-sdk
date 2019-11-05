@@ -1,4 +1,4 @@
-package com.qcloud.cmq.Json;
+package com.qcloud.cmq.json;
 
 /**
  * The JSONException is thrown by the JSON.org classes when things are amiss.

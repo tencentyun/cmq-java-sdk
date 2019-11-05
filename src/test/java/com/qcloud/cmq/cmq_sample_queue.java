@@ -79,7 +79,7 @@ public class cmq_sample_queue {
 
 		//接收消息
 		System.out.println("---------------recv message ...---------------");
-		Message msg = queue.receiveMessage(10);
+		Message msg = queue.receiveMessage();
 
 		System.out.println("msgId:" + msg.msgId);
 		System.out.println("msgBody:" + msg.msgBody);
@@ -113,7 +113,7 @@ public class cmq_sample_queue {
 		//批量接收消息
 		ArrayList<String> vtReceiptHandle = new ArrayList<String>(); //保存服务器返回的消息句柄，用于删除消息
 		System.out.println("---------------batch recv message ...---------------");
-		List<Message> msgList = queue.batchReceiveMessage(10,10);
+		List<Message> msgList = queue.batchReceiveMessage(10);
 		System.out.println("recv msg count:" + msgList.size());
 		for(int i=0;i<msgList.size();i++)
 		{

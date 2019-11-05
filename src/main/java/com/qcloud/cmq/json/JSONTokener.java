@@ -1,4 +1,4 @@
-package com.qcloud.cmq.Json;
+package com.qcloud.cmq.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -365,6 +365,8 @@ public class JSONTokener {
             case '[':
                 this.back();
                 return new JSONArray(this);
+            default:
+                break;
         }
 
         /*
@@ -439,6 +441,7 @@ public class JSONTokener {
      *
      * @return " at {index} [character {character} line {line}]"
      */
+    @Override
     public String toString() {
         return " at " + this.index + " [character " + this.character + " line " +
             this.line + "]";

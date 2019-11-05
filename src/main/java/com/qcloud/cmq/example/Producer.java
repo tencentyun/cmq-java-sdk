@@ -88,10 +88,12 @@ public class Producer {
             msgBody = "hello world,this is cmq sdk for java 3";
             vtMsgBody.add(msgBody);
             List<String> vtMsgId = queue.batchSendMessage(vtMsgBody);
-            for(int i=0;i<vtMsgBody.size();i++)
+            for(int i=0;i<vtMsgBody.size();i++) {
                 System.out.println("[" + vtMsgBody.get(i) + "] sent");
-            for(int i=0;i<vtMsgId.size();i++)
+            }
+            for(int i=0;i<vtMsgId.size();i++) {
                 System.out.println("msgId:" + vtMsgId.get(i));
+            }
 
 
         }catch(CMQServerException e1){
