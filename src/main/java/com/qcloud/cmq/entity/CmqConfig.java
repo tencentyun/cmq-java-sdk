@@ -22,10 +22,9 @@ public class CmqConfig {
     //慢操作阈值 ms
     private long slowThreshold = 1500;
     //最大连接等待时间 ms
-    private int connectTimeout = 3000;
-    //客户端读取数据，挂起时间 ms
-    private int readTimeout = 3000;
-
+    private int connectTimeout = 80000;
+    //客户端读取数据，超时时间 ms，请务必大于控制台设置的队列长轮询时间
+    private int readTimeout = 80000;
     //线程池中最大空闲线程数
     private int maxIdleConnections = 10;
 
