@@ -1,6 +1,8 @@
 package com.qcloud.cmq;
 
 import com.qcloud.cmq.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -9,7 +11,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class CMQTool {
-
+	private static final Logger log = LoggerFactory.getLogger(CMQTool.class);
 	private static char[] b64c = new char[] { 'A', 'B', 'C', 'D',
 			'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 			'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
@@ -76,6 +78,7 @@ public class CMQTool {
 
 	public static void checkResult(String result) {
 		if (result == null || "".equals(result.trim())) {
+			log.error("result is empty");
 			throw new CMQServerException(0, "result is empty");
 		}
 		checkResult(new JSONObject(result));
@@ -83,10 +86,12 @@ public class CMQTool {
 
 	public static void checkResult(JSONObject jsonObj) {
 		if (jsonObj.isNull("code")) {
+			log.error("can't find field code in result:" + jsonObj.toString());
 			throw new CMQServerException(0, "can't find field code in result:" + jsonObj.toString());
 		}
 		int code = jsonObj.getInt("code");
 		if (code != 0) {
+			log.error("error response:" + jsonObj.toString());
 			throw new CMQServerException(code, jsonObj.getString("message"));
 		}
 	}
