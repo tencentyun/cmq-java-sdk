@@ -40,38 +40,39 @@ public class HttpUtil {
     private static String httpGet(String url, CmqConfig cmqConfig) throws Exception {
         String result = null;
         Request request = new Request.Builder().url(url).build();
-        long start = System.currentTimeMillis();
-        log.debug("request:{} timeout:{}", request.toString(), httpClient.readTimeoutMillis());
-        try {
-            result = doRequest(cmqConfig, request);
-        } catch (Exception e) {
-            long duration = System.currentTimeMillis() - start;
-            log.error("exec time: {},request:{},err:{}", duration, url, e.getMessage());
-            throw e;
+        if (log.isDebugEnabled()) {
+            log.debug("request:{} timeout:{}", request.toString(), httpClient.readTimeoutMillis());
         }
+        result = doRequest(cmqConfig, request);
         return result;
     }
 
     private static String doRequest(CmqConfig cmqConfig, Request request) throws IOException {
-        String result;
-        long start = System.currentTimeMillis();
+        String result = null;
         Response response = null;
-        if(cmqConfig.isReceive()){
-            //存在fd耗尽风险，为兼容老接口
-            OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                    .connectionPool(new ConnectionPool(1, 5L, TimeUnit.MINUTES))
-                    .connectTimeout(cmqConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
-                    .readTimeout(cmqConfig.getReadTimeout() + cmqConfig.getPollingWaitTimeout(), TimeUnit.MILLISECONDS).build();
-            response = okHttpClient.newCall(request).execute();
-        }else {
-            response = httpClient.newCall(request).execute();
-        }
-        result = response.body().string();
-        long duration = System.currentTimeMillis() - start;
-        if (cmqConfig.isAlwaysPrintResultLog()) {
-            log.info("exec time: {},response:{}", duration, result);
-        } else if (cmqConfig.isPrintSlow() && duration > cmqConfig.getSlowThreshold()) {
-            log.warn("exec time: {},response:{}", duration, result);
+        long start = System.currentTimeMillis();
+        try {
+            if (cmqConfig.isReceive()) {
+                //存在fd耗尽风险，为兼容老接口
+                OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                        .connectionPool(new ConnectionPool(1, 5L, TimeUnit.MINUTES))
+                        .connectTimeout(cmqConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
+                        .readTimeout(cmqConfig.getReadTimeout() + cmqConfig.getPollingWaitTimeout(), TimeUnit.MILLISECONDS).build();
+                response = okHttpClient.newCall(request).execute();
+            } else {
+                response = httpClient.newCall(request).execute();
+            }
+            result = response.body().string();
+            long duration = System.currentTimeMillis() - start;
+            if (cmqConfig.isAlwaysPrintResultLog()) {
+                log.info("exec time: {},response:{}", duration, result);
+            } else if (cmqConfig.isPrintSlow() && duration > cmqConfig.getSlowThreshold()) {
+                log.warn("exec time: {},response:{}", duration, result);
+            }
+        } catch (Exception e) {
+            long duration = System.currentTimeMillis() - start;
+            log.error("request fail ,exec time: {}", duration, e);
+            throw e;
         }
         return result;
     }
@@ -87,15 +88,10 @@ public class HttpUtil {
         String result;
         RequestBody requestBody = RequestBody.create(MediaType.parse("*/*;charset=utf-8"), data);
         Request request = new Request.Builder().url(url).post(requestBody).build();
-        long start = System.currentTimeMillis();
-        log.debug("request:{} timeout:{} data:{}", request.toString(), httpClient.readTimeoutMillis(), data);
-        try {
-            result = doRequest(cmqConfig, request);
-        } catch (Exception e) {
-            long duration = System.currentTimeMillis() - start;
-            log.error("exec time: {},request:{}", duration, url, e);
-            throw e;
+        if (log.isDebugEnabled()) {
+            log.debug("request:{} timeout:{} data:{}", request.toString(), httpClient.readTimeoutMillis(), data);
         }
+        result = doRequest(cmqConfig, request);
         return result;
     }
 }
