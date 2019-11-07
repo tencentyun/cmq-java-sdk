@@ -97,8 +97,7 @@ public class Queue {
     }
 
     /**
-     * 发送消息
-     *
+     * 发送消息,接口在1.0.7中将被废弃
      * @param msgBody 消息内容
      * @return 服务器返回的消息唯一标识
      */
@@ -145,7 +144,7 @@ public class Queue {
     }
 
     /**
-     * 批量发送消息
+     * 批量发送消息,接口在1.0.7中将被废弃
      * @param vtMsgBody 消息列表
      * @return 服务器返回的消息唯一标识列表
      */
@@ -213,6 +212,13 @@ public class Queue {
         return cmqResponses;
     }
 
+    /**
+     * 接口在1.0.7中将被废弃，长轮询时间应该由queue端设置，请勿使用
+     * @param pollingWaitSeconds
+     * @return
+     * @throws Exception
+     */
+    @Deprecated
     public Message receiveMessage(int pollingWaitSeconds) throws Exception {
         TreeMap<String, String> param = new TreeMap<>();
 
@@ -243,7 +249,7 @@ public class Queue {
     }
 
     /**
-     * 批量获取消息
+     * 批量获取消息，接口在1.0.7中将被废弃，长轮询时间应该由queue端设置，请勿使用
      *
      * @param numOfMsg               准备获取消息数
      * @param pollingWaitSeconds     请求最长的Polling等待时间
@@ -251,6 +257,7 @@ public class Queue {
      * @throws CMQClientException
      * @throws CMQServerException
      */
+    @Deprecated
     public List<Message> batchReceiveMessage(int numOfMsg, int pollingWaitSeconds) throws Exception {
         TreeMap<String, String> param = new TreeMap<>();
 

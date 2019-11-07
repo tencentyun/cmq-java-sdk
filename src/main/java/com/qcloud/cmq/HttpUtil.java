@@ -57,13 +57,12 @@ public class HttpUtil {
         long start = System.currentTimeMillis();
         Response response = null;
         if(cmqConfig.isReceive()){
+            //存在fd耗尽风险，为兼容老接口
             OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                    .connectionPool(new ConnectionPool(0, 1L, TimeUnit.MINUTES))
-                    .connectTimeout(cmqConfig.getConnectTimeout()+ cmqConfig.getPollingWaitTimeout(), TimeUnit.MILLISECONDS)
+                    .connectionPool(new ConnectionPool(1, 5L, TimeUnit.MINUTES))
+                    .connectTimeout(cmqConfig.getConnectTimeout(), TimeUnit.MILLISECONDS)
                     .readTimeout(cmqConfig.getReadTimeout() + cmqConfig.getPollingWaitTimeout(), TimeUnit.MILLISECONDS).build();
             response = okHttpClient.newCall(request).execute();
-            //释放线程池
-            okHttpClient.connectionPool().evictAll();
         }else {
             response = httpClient.newCall(request).execute();
         }
