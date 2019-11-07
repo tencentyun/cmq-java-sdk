@@ -1,4 +1,6 @@
-package com.qcloud.cmq;
+package com.qcloud.cmq.entity;
+
+import com.qcloud.cmq.CMQHttp;
 
 /**
  * @author: feynmanlin
@@ -13,17 +15,40 @@ public class CmqConfig {
     private String signMethod = "sha1";
     private CMQHttp cmqHttp;
 
-    //Whether to print a slow query
-    private boolean printSlow = false;
+    //是否打印慢操作
+    private boolean printSlow = true;
+    //是否总是打印返回结果
     private boolean alwaysPrintResultLog = false;
-    //Slow query threshold, unit ms
+    //慢操作阈值 ms
     private long slowThreshold = 1500;
-    //maximum wait time for polling
-    private int connectTimeout = 1000;
-    private int readTimeout = 1000;
-    //max http Idle Connections
+    //最大连接等待时间 ms
+    private int connectTimeout = 3000;
+    //客户端读取数据，挂起时间 ms
+    private int readTimeout = 3000;
+
+    //线程池中最大空闲线程数
     private int maxIdleConnections = 10;
 
+    //预留配置项
+    private boolean isReceive = false;
+    //预留配置项，接收消息时，服务端长轮询挂起时间 ms
+    private int pollingWaitTimeout = 30000;
+
+    public boolean isReceive() {
+        return isReceive;
+    }
+
+    public void setReceive(boolean receive) {
+        isReceive = receive;
+    }
+
+    public int getPollingWaitTimeout() {
+        return pollingWaitTimeout;
+    }
+
+    public void setPollingWaitTimeout(int pollingWaitTimeout) {
+        this.pollingWaitTimeout = pollingWaitTimeout;
+    }
 
     public int getReadTimeout() {
         return readTimeout;

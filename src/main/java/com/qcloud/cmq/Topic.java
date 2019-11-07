@@ -213,6 +213,9 @@ public class Topic {
         CMQTool.checkResult(result);
 
         int totalCount = jsonObj.getInt("totalCount");
+        if(!jsonObj.has("subscriptionList")){
+            return 0;
+        }
         JSONArray jsonArray = jsonObj.getJSONArray("subscriptionList");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = (JSONObject) jsonArray.get(i);

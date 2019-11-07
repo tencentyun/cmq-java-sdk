@@ -1,5 +1,6 @@
 package com.qcloud.cmq;
 
+import com.qcloud.cmq.entity.CmqConfig;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +55,23 @@ public class HttpUtil {
     private static String doRequest(CmqConfig cmqConfig, Request request) throws IOException {
         String result;
         long start = System.currentTimeMillis();
-        Response response = httpClient.newCall(request).execute();
-        long duration = System.currentTimeMillis() - start;
+        Response response = null;
+        if(cmqConfig.isReceive()){
+            OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                    .connectionPool(new ConnectionPool(0, 1L, TimeUnit.MINUTES))
+                    .connectTimeout(cmqConfig.getConnectTimeout()+ cmqConfig.getPollingWaitTimeout(), TimeUnit.MILLISECONDS)
+                    .readTimeout(cmqConfig.getReadTimeout() + cmqConfig.getPollingWaitTimeout(), TimeUnit.MILLISECONDS).build();
+            response = okHttpClient.newCall(request).execute();
+            //释放线程池
+            okHttpClient.connectionPool().evictAll();
+        }else {
+            response = httpClient.newCall(request).execute();
+        }
         result = response.body().string();
+        long duration = System.currentTimeMillis() - start;
         if (cmqConfig.isAlwaysPrintResultLog()) {
             log.info("exec time: {},response:{}", duration, result);
-        } else if (duration > cmqConfig.getSlowThreshold()) {
+        } else if (cmqConfig.isPrintSlow() && duration > cmqConfig.getSlowThreshold()) {
             log.warn("exec time: {},response:{}", duration, result);
         }
         return result;

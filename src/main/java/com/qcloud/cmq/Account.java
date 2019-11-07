@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.lang.Integer;
 
+import com.qcloud.cmq.entity.CmqConfig;
 import com.qcloud.cmq.json.*;
 
 /**

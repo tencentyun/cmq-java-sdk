@@ -1,5 +1,7 @@
 package com.qcloud.cmq;
 
+import com.qcloud.cmq.entity.CmqConfig;
+
 import java.net.URLEncoder;
 import java.util.Random;
 import java.util.TreeMap;
@@ -27,6 +29,26 @@ public class CMQClient {
             throw new RuntimeException("cmqConfig is null!");
         }
         return call(action, param, cmqConfig);
+    }
+
+    public String callReceive(String action, TreeMap<String, String> param) throws Exception {
+        //todo 为了兼容老版本pollingWaitSeconds参数，对Receive对特殊处理，在后续版本删除receiveMessage(int pollingWaitSeconds)等接口后，可以删除
+        CmqConfig tempCmqConfig = new CmqConfig();
+        tempCmqConfig.setReceive(true);
+        tempCmqConfig.setEndpoint(cmqConfig.getEndpoint());
+        tempCmqConfig.setPath(cmqConfig.getPath());
+        tempCmqConfig.setSecretId(cmqConfig.getSecretId());
+        tempCmqConfig.setSecretKey(cmqConfig.getSecretKey());
+        tempCmqConfig.setMethod(cmqConfig.getMethod());
+        tempCmqConfig.setSignMethod(cmqConfig.getSignMethod());
+        tempCmqConfig.setCmqHttp(cmqConfig.getCmqHttp());
+        tempCmqConfig.setPrintSlow(cmqConfig.isPrintSlow());
+        tempCmqConfig.setSlowThreshold(cmqConfig.getSlowThreshold());
+        tempCmqConfig.setConnectTimeout(cmqConfig.getConnectTimeout());
+        tempCmqConfig.setReadTimeout(cmqConfig.getReadTimeout());
+        tempCmqConfig.setMaxIdleConnections(cmqConfig.getMaxIdleConnections());
+        tempCmqConfig.setPollingWaitTimeout(Integer.parseInt(param.get("pollingWaitSeconds")));
+        return call(action, param, tempCmqConfig);
     }
 
     public String call(String action, TreeMap<String, String> param, CmqConfig cmqConfig) throws Exception {
@@ -86,6 +108,8 @@ public class CMQClient {
                 flag = true;
             }
         }
+
+
         rsp = HttpUtil.request(url, req, cmqConfig);
         return rsp;
     }

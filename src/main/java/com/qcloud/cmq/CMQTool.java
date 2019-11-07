@@ -16,7 +16,7 @@ public class CMQTool {
 			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
 			'4', '5', '6', '7', '8', '9', '+', '/' };
-			
+
     private static final String CONTENT_CHARSET = "UTF-8";
 
     private static final String HMAC_ALGORITHM = "HmacSHA1";
@@ -54,11 +54,11 @@ public class CMQTool {
 		}
 		return sb.toString();
 	}
-		
+
 	public static String sign(String src, String key,String method)
-    		throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException 
+    		throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException
     {
-		Mac mac ; 
+		Mac mac ;
 		if( "sha1".equals(method))
 		{
            mac = Mac.getInstance(HMAC_ALGORITHM);
@@ -74,18 +74,21 @@ public class CMQTool {
     }
 
 
-    public static void checkResult(String result){
-		if(result == null || "".equals(result.trim())){
-			throw new CMQServerException(0,"result is empty");
+	public static void checkResult(String result) {
+		if (result == null || "".equals(result.trim())) {
+			throw new CMQServerException(0, "result is empty");
 		}
-		JSONObject jsonObj = new JSONObject(result);
-		if(jsonObj.isNull("code")){
-			throw new CMQServerException(0,"cann't find field code in result:"+result);
+		checkResult(new JSONObject(result));
+	}
+
+	public static void checkResult(JSONObject jsonObj) {
+		if (jsonObj.isNull("code")) {
+			throw new CMQServerException(0, "can't find field code in result:" + jsonObj.toString());
 		}
 		int code = jsonObj.getInt("code");
-		if(code != 0) {
+		if (code != 0) {
 			throw new CMQServerException(code, jsonObj.getString("message"));
 		}
 	}
-		
+
 }
