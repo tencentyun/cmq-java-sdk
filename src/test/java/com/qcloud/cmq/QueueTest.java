@@ -26,9 +26,6 @@ public class QueueTest {
 
     @Before
     public void initConfig() {
-        System.setProperty("address", "http://cmq-queue-gz.api.qcloud.com");
-        System.setProperty("secretId", "AKIDFOguwoHyEsR2Uoat9KmDT6bN4bw55pQu");
-        System.setProperty("secretKey", "Jm5C7qO3d1DE3g6Kd8pRr58ze6MSSMIF");
 
         cmqConfig = new CmqConfig();
         cmqConfig.setEndpoint(System.getProperty("address"));
