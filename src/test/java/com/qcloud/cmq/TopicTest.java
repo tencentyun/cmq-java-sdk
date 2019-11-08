@@ -23,9 +23,9 @@ public class TopicTest {
     public void initConfig() {
 
         cmqConfig = new CmqConfig();
-        cmqConfig.setEndpoint(System.getProperty("address"));
-        cmqConfig.setSecretId(System.getProperty("secretId"));
-        cmqConfig.setSecretKey(System.getProperty("secretKey"));
+        cmqConfig.setEndpoint("");
+        cmqConfig.setSecretId("");
+        cmqConfig.setSecretKey("");
         cmqConfig.setConnectTimeout(10000);
         cmqConfig.setReadTimeout(10000);
         cmqConfig.setMethod("POST");
@@ -101,7 +101,7 @@ public class TopicTest {
         String Protocol = "queue";
         account.createSubscribe(topicName, subscriptionName, queueName, Protocol);
         deleteSubscriptionList.add(new String[]{topicName, subscriptionName});
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         ArrayList<String> vSubscription = new ArrayList<>();
         int subscriptionCount = topic.ListSubscription(-1, -1, "cmq-sub-test", vSubscription);
         //校验订阅关系是否正确

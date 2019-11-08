@@ -17,36 +17,32 @@ public class CmqConfig {
 
     //是否打印慢操作
     private boolean printSlow = true;
+
     //是否总是打印返回结果
     private boolean alwaysPrintResultLog = false;
+
     //慢操作阈值 ms
     private long slowThreshold = 1500;
+
     //最大连接等待时间 ms
-    private int connectTimeout = 80000;
-    //客户端读取数据，超时时间 ms，请务必大于控制台设置的队列长轮询时间
-    private int readTimeout = 80000;
+    private int connectTimeout = 10000;
+
+    //客户端等待返回数据超时时间 ms
+    private int readTimeout = 10000;
+
+    //客户端接收数据长轮询超时时间 ms，请务必大于控制台设置的队列长轮询时间
+    private int receiveTimeout = 80000;
+
     //线程池中最大空闲线程数
     private int maxIdleConnections = 10;
 
-    //预留配置项
-    private boolean isReceive = false;
-    //预留配置项，接收消息时，服务端长轮询挂起时间 ms
-    private int pollingWaitTimeout = 30000;
 
-    public boolean isReceive() {
-        return isReceive;
+    public int getReceiveTimeout() {
+        return receiveTimeout;
     }
 
-    public void setReceive(boolean receive) {
-        isReceive = receive;
-    }
-
-    public int getPollingWaitTimeout() {
-        return pollingWaitTimeout;
-    }
-
-    public void setPollingWaitTimeout(int pollingWaitTimeout) {
-        this.pollingWaitTimeout = pollingWaitTimeout;
+    public void setReceiveTimeout(int receiveTimeout) {
+        this.receiveTimeout = receiveTimeout;
     }
 
     public int getReadTimeout() {

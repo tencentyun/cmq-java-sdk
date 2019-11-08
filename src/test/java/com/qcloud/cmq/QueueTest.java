@@ -28,12 +28,12 @@ public class QueueTest {
     public void initConfig() {
 
         cmqConfig = new CmqConfig();
-        cmqConfig.setEndpoint(System.getProperty("address"));
-        cmqConfig.setSecretId(System.getProperty("secretId"));
-        cmqConfig.setSecretKey(System.getProperty("secretKey"));
+        cmqConfig.setEndpoint("");
+        cmqConfig.setSecretId("");
+        cmqConfig.setSecretKey("");
         cmqConfig.setConnectTimeout(10000);
         cmqConfig.setReadTimeout(10000);
-        cmqConfig.setPollingWaitTimeout(1000);
+        cmqConfig.setReceiveTimeout(15000);
         cmqConfig.setMaxIdleConnections(1);
         account = new Account(cmqConfig);
     }
@@ -194,7 +194,7 @@ public class QueueTest {
         LocalDateTime now = LocalDateTime.now();
         Thread.sleep(3000);
         Queue queue = account.getQueue(queueName1);
-        Thread.sleep(3000);
+        Thread.sleep(5000);
         CmqResponse cmqResponse = queue.send("hello world,this is cmq sdk for java");
         Assert.assertTrue(cmqResponse != null && cmqResponse.getMsgId().trim().length() > 0);
         Assert.assertTrue(cmqResponse != null && cmqResponse.getRequestId().trim().length() > 0);
@@ -395,7 +395,7 @@ public class QueueTest {
     @Test
     public void testTimeout() throws Exception {
         QueueMeta meta = new QueueMeta();
-        meta.pollingWaitSeconds = 5;
+        meta.pollingWaitSeconds = 20;
         meta.visibilityTimeout = 10;
         meta.maxMsgSize = 1048576;
         meta.msgRetentionSeconds = 345600;
@@ -407,24 +407,26 @@ public class QueueTest {
         long start = System.currentTimeMillis();
         Message message = null;
         try {
+            //等待receiveTimeout的时间15秒，队列长轮询时间20秒，因此超时时间为15秒
             message = queue.receiveMessage();
         } catch (Exception e) {
 
         }
         long lastTime = System.currentTimeMillis() - start;
         Assert.assertTrue(message == null);
-        Assert.assertTrue("last for " + lastTime, 4500 + cmqConfig.getReadTimeout() >= lastTime);
-        Assert.assertTrue("last for " + lastTime + " pollingTime:" + 4500, lastTime > 4500);
+        Assert.assertTrue("last for " + lastTime + " pollingTime:" + 15000, lastTime > 14000 );
+        Assert.assertTrue("last for " + lastTime + " pollingTime:" + 15000, 16000  >= lastTime);
         start = System.currentTimeMillis();
         try {
+            //客户端控制长轮询3秒，超时时间 = 3秒
             queue.receiveMessage(3);
         } catch (Exception e) {
 
         }
         lastTime = System.currentTimeMillis() - start;
-        Assert.assertTrue("last for " + lastTime, 3000 + cmqConfig.getReadTimeout() >= lastTime);
-        Assert.assertTrue("last for " + lastTime, lastTime >= 3000);
-
+        Assert.assertTrue("last for " + lastTime, 4000 >= lastTime);
+        Assert.assertTrue("last for " + lastTime, lastTime >= 2500);
+        start = System.currentTimeMillis();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -437,7 +439,10 @@ public class QueueTest {
             }
         }).start();
         message = queue.receiveMessage(5);
+        lastTime = System.currentTimeMillis() - start;
         Assert.assertTrue("msg".equals(message.msgBody));
+        Assert.assertTrue("last for " + lastTime,lastTime >= 2000);
+        Assert.assertTrue("last for " + lastTime,lastTime <= 3000);
 
     }
 

@@ -229,7 +229,7 @@ public class Queue {
             param.put("pollingWaitSeconds", Integer.toString(30000));
         }
 
-        String result = this.client.callReceive("ReceiveMessage", param);
+        String result = this.client.call("ReceiveMessage", param);
         JSONObject jsonObj = new JSONObject(result);
         int code = jsonObj.getInt("code");
         if(code != 0) {
@@ -268,7 +268,7 @@ public class Queue {
         } else {
             param.put("pollingWaitSeconds", Integer.toString(30000));
         }
-        String result = this.client.callReceive("BatchReceiveMessage", param);
+        String result = this.client.call("BatchReceiveMessage", param);
         JSONObject jsonObj = new JSONObject(result);
         int code = jsonObj.getInt("code");
         if(code != 0) {
