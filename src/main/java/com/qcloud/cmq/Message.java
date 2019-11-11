@@ -24,5 +24,6 @@ public class Message {
 	public long firstDequeueTime;
 	/** 出队列次数 */
 	public	int dequeueCount;
+	public	String requestId;
 	public  Vector<String> msgTag;
 }

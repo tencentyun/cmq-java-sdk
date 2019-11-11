@@ -4,6 +4,7 @@ import com.qcloud.cmq.Account;
 import com.qcloud.cmq.CMQServerException;
 import com.qcloud.cmq.Queue;
 import com.qcloud.cmq.QueueMeta;
+import com.qcloud.cmq.entity.CmqResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +75,8 @@ public class Producer {
             // 发送单条信息
             System.out.println("---------------send message ...---------------");
             String msg = "hello!";
-            String msgId = queue.sendMessage(msg);
-            System.out.println("==> send success! msg_id:" + msgId);
+            CmqResponse cmqResponse = queue.send(msg);
+            System.out.println("==> send success! msg_id:" + cmqResponse.getMsgId() + " requestId:" + cmqResponse.getRequestId());
 
             //批量操作
             //批量发送消息
@@ -87,11 +88,14 @@ public class Producer {
             vtMsgBody.add(msgBody);
             msgBody = "hello world,this is cmq sdk for java 3";
             vtMsgBody.add(msgBody);
-            List<String> vtMsgId = queue.batchSendMessage(vtMsgBody);
-            for(int i=0;i<vtMsgBody.size();i++)
+            List<CmqResponse> cmqResponses = queue.batchSend(vtMsgBody);
+            for (int i = 0; i < vtMsgBody.size(); i++) {
                 System.out.println("[" + vtMsgBody.get(i) + "] sent");
-            for(int i=0;i<vtMsgId.size();i++)
-                System.out.println("msgId:" + vtMsgId.get(i));
+            }
+            for (int i = 0; i < cmqResponses.size(); i++) {
+                CmqResponse response = cmqResponses.get(i);
+                System.out.println("msgId:" + response.getMsgId() + " requestId:" + response.getRequestId());
+            }
 
 
         }catch(CMQServerException e1){

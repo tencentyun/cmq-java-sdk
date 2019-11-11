@@ -1,4 +1,4 @@
-package com.qcloud.cmq.Json;
+package com.qcloud.cmq.json;
 
 /*
  Copyright (c) 2002 JSON.org
@@ -210,12 +210,12 @@ public class JSONArray {
     public boolean getBoolean(int index) throws JSONException {
         Object object = this.get(index);
         if (object.equals(Boolean.FALSE)
-                || (object instanceof String && ((String) object)
-                        .equalsIgnoreCase("false"))) {
+                || (object instanceof String && "false"
+                        .equalsIgnoreCase((String) object))) {
             return false;
         } else if (object.equals(Boolean.TRUE)
-                || (object instanceof String && ((String) object)
-                        .equalsIgnoreCase("true"))) {
+                || (object instanceof String && "true"
+                        .equalsIgnoreCase((String) object))) {
             return true;
         }
         throw new JSONException("JSONArray[" + index + "] is not a boolean.");
@@ -885,6 +885,7 @@ public class JSONArray {
      * @return a printable, displayable, transmittable representation of the
      *         array.
      */
+    @Override
     public String toString() {
         try {
             return this.toString(0);
