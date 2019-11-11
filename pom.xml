@@ -4,7 +4,7 @@
     <groupId>com.qcloud.cmq</groupId>
     <artifactId>cmq</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.2-topic</version>
+    <version>1.0.6</version>
     <name>cmq</name>
     <url>http://maven.apache.org</url>
     <properties>
