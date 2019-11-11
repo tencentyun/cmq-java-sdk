@@ -1,4 +1,4 @@
-package com.qcloud.cmq.Json;
+package com.qcloud.cmq.json;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -78,7 +78,7 @@ public class JSONWriter {
     /**
      * The object/array stack.
      */
-    private final JSONObject stack[];
+    private final JSONObject[] stack;
 
     /**
      * The stack top index. A value of 0 indicates that the stack is empty.

@@ -3,8 +3,8 @@ package com.qcloud.cmq;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import com.qcloud.cmq.Json.JSONArray;
-import com.qcloud.cmq.Json.JSONObject;
+import com.qcloud.cmq.json.JSONArray;
+import com.qcloud.cmq.json.JSONObject;
 
 /**
  * TODO subscription class.
@@ -36,11 +36,8 @@ public class Subscription {
 		param.put("topicName",this.topicName);
 		param.put("subscriptionName", this.subscriptionName);
 		String result = this.client.call("ClearSUbscriptionFIlterTags",param);
-		
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+
+		CMQTool.checkResult(result);
     
     }
 	/**
@@ -55,10 +52,12 @@ public class Subscription {
 
 		param.put("topicName",this.topicName);
 		param.put("subscriptionName", this.subscriptionName);
-		if( !meta.NotifyStrategy.equals(""))
-			param.put("notifyStrategy",meta.NotifyStrategy);
-		if( !meta.NotifyContentFormat.equals(""))
-			param.put("notifyContentFormat", meta.NotifyContentFormat);
+		if( !"".equals(meta.NotifyStrategy)) {
+            param.put("notifyStrategy",meta.NotifyStrategy);
+        }
+		if( !"".equals(meta.NotifyContentFormat)) {
+            param.put("notifyContentFormat", meta.NotifyContentFormat);
+        }
 		if( meta.FilterTag != null )
 		{
 			int n = 1 ;
@@ -79,11 +78,8 @@ public class Subscription {
 		}
 	
 		String result = this.client.call("SetSubscriptionAttributes", param);
-		
-		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+
+		CMQTool.checkResult(result);
 	}
 	
 	/**
@@ -102,26 +98,31 @@ public class Subscription {
 		String result = this.client.call("GetSubscriptionAttributes", param);
 		
 		JSONObject jsonObj = new JSONObject(result);
-		int code = jsonObj.getInt("code");
-		if(code != 0)
-			throw new CMQServerException(code,jsonObj.getString("message"));
+		CMQTool.checkResult(result);
 
 		SubscriptionMeta meta = new SubscriptionMeta();
 		meta.FilterTag = new Vector<String>();
-        if(jsonObj.has("endpoint"))
-		    meta.Endpoint = jsonObj.getString("endpoint");
-        if(jsonObj.has("notifyStrategy"))
-		    meta.NotifyStrategy = jsonObj.getString("notifyStrategy");
-        if(jsonObj.has("notifyContentFormat"))
-		    meta.NotifyContentFormat = jsonObj.getString("notifyContentFormat");
-        if(jsonObj.has("protocol"))
-		    meta.Protocal = jsonObj.getString("protocol");
-        if(jsonObj.has("createTime"))
-		    meta.CreateTime = jsonObj.getInt("createTime");
-        if(jsonObj.has("lastModifyTime"))
-		    meta.LastModifyTime = jsonObj.getInt("lastModifyTime");
-        if(jsonObj.has("msgCount"))
-		   meta.msgCount = jsonObj.getInt("msgCount");
+        if(jsonObj.has("endpoint")) {
+            meta.Endpoint = jsonObj.getString("endpoint");
+        }
+        if(jsonObj.has("notifyStrategy")) {
+            meta.NotifyStrategy = jsonObj.getString("notifyStrategy");
+        }
+        if(jsonObj.has("notifyContentFormat")) {
+            meta.NotifyContentFormat = jsonObj.getString("notifyContentFormat");
+        }
+        if(jsonObj.has("protocol")) {
+            meta.Protocal = jsonObj.getString("protocol");
+        }
+        if(jsonObj.has("createTime")) {
+            meta.CreateTime = jsonObj.getInt("createTime");
+        }
+        if(jsonObj.has("lastModifyTime")) {
+            meta.LastModifyTime = jsonObj.getInt("lastModifyTime");
+        }
+        if(jsonObj.has("msgCount")) {
+            meta.msgCount = jsonObj.getInt("msgCount");
+        }
 	    if(jsonObj.has("filterTag"))
         {
 		    JSONArray jsonArray = jsonObj.getJSONArray("filterTag");

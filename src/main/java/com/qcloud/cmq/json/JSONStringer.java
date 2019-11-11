@@ -1,4 +1,4 @@
-package com.qcloud.cmq.Json;
+package com.qcloud.cmq.json;
 
 /*
 Copyright (c) 2006 JSON.org
@@ -72,6 +72,7 @@ public class JSONStringer extends JSONWriter {
      * <code>endArray</code>).
      * @return The JSON text.
      */
+    @Override
     public String toString() {
         return this.mode == 'd' ? this.writer.toString() : null;
     }

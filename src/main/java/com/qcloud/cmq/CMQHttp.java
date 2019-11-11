@@ -39,6 +39,7 @@ public class CMQHttp {
             if(url.toLowerCase().startsWith("https")){
                 HttpsURLConnection httpsConn = (HttpsURLConnection)realUrl.openConnection();
                 httpsConn.setHostnameVerifier(new HostnameVerifier(){
+                    @Override
                     public boolean verify(String hostname, SSLSession session){
                         return true;
                     }
@@ -49,8 +50,9 @@ public class CMQHttp {
                 connection = realUrl.openConnection();
             }
            	this.connection.setRequestProperty("Accept", "*/*");
-			if(this.isKeepAlive)
-				this.connection.setRequestProperty("Connection", "Keep-Alive");
+			if(this.isKeepAlive) {
+                this.connection.setRequestProperty("Connection", "Keep-Alive");
+            }
 			this.connection.setRequestProperty("User-Agent",
 					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 
@@ -68,7 +70,7 @@ public class CMQHttp {
             this.connection.setConnectTimeout(timeout+userTimeout);
             this.connection.setReadTimeout(timeout+userTimeout);
 	
-			if (method.equals("POST")) {
+			if ("POST".equals(method)) {
 				((HttpURLConnection)this.connection).setRequestMethod("POST");
 	
 				this.connection.setDoOutput(true);
@@ -87,8 +89,9 @@ public class CMQHttp {
 
 			this.connection.connect();
 			int status = ((HttpURLConnection)this.connection).getResponseCode();
-			if(status != 200)
-				throw new CMQServerException(status);
+			if(status != 200) {
+                throw new CMQServerException(status);
+            }
 	
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream(),"utf-8"));
 	
@@ -100,8 +103,9 @@ public class CMQHttp {
 			throw e;
 		}finally{
 			try {
-				if (in != null) 
-					in.close();
+				if (in != null) {
+                    in.close();
+                }
 			} catch (Exception e2) {
 				throw e2;
 			}
