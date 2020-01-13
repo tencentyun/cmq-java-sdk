@@ -1,7 +1,5 @@
 package com.qcloud.cmq.entity;
 
-import com.qcloud.cmq.CMQHttp;
-
 /**
  * @author: feynmanlin
  * @date: 2019/11/5 2:30 下午
@@ -13,7 +11,6 @@ public class CmqConfig {
     private String secretKey;
     private String method = "POST";
     private String signMethod = "sha1";
-    private CMQHttp cmqHttp;
 
     //是否打印慢操作
     private boolean printSlow = true;
@@ -115,14 +112,6 @@ public class CmqConfig {
 
     public void setSignMethod(String signMethod) {
         this.signMethod = signMethod;
-    }
-
-    public CMQHttp getCmqHttp() {
-        return cmqHttp;
-    }
-
-    public void setCmqHttp(CMQHttp cmqHttp) {
-        this.cmqHttp = cmqHttp;
     }
 
     public int getConnectTimeout() {
