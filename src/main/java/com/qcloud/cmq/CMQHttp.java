@@ -14,6 +14,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
+@Deprecated
 public class CMQHttp {
 	private  int timeout ;
 	private  boolean isKeepAlive;

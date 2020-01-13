@@ -10,6 +10,7 @@ public class CMQServerException extends RuntimeException {
 		this.httpStatus = status;
 	}
     public CMQServerException(int errorCode, String errorMessage){
+        super(errorMessage);
         this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
     }
