@@ -8,11 +8,11 @@ API的具体使用方式，可以参考源码中example目录下的demo
 项目引入SDK可以使用Maven依赖或者直接下载源码
 
 ### 方式一：Maven依赖
-直接pom文件中加入maven依赖。1.0.7版本开始，SDK的artifactId改为cmq-http
+直接pom文件中加入maven依赖。1.0.7版本开始，SDK的artifactId改为`cmq-http-client`
 ```xml
 <dependency>
     <groupId>com.qcloud</groupId>
-    <artifactId>cmq-http</artifactId>
+    <artifactId>cmq-http-client</artifactId>
     <version>1.0.7</version>
 </dependency>
 
