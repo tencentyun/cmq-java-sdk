@@ -15,6 +15,18 @@ public class CMQServerException extends RuntimeException {
 		this.errorMessage = errorMessage;
     }
 
+    public int getHttpStatus() {
+        return httpStatus;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
     @Override
     public String toString() {
 	if(httpStatus != 200) {
