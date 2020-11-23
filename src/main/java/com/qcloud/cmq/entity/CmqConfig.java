@@ -12,6 +12,22 @@ public class CmqConfig {
     private String method = "POST";
     private String signMethod = "sha1";
 
+    public CmqConfig() {}
+
+    public CmqConfig(String endpoint, String secretId, String secretKey) {
+        this.endpoint = endpoint;
+        this.secretId = secretId;
+        this.secretKey = secretKey;
+    }
+
+    public CmqConfig(String endpoint, String secretId, String secretKey, String path, String method) {
+        this.endpoint = endpoint;
+        this.secretId = secretId;
+        this.secretKey = secretKey;
+        this.path = path;
+        this.method = method;
+    }
+
     //是否打印慢操作
     private boolean printSlow = true;
 

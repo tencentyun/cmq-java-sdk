@@ -4,8 +4,8 @@ import com.qcloud.cmq.entity.ActionProperties;
 import com.qcloud.cmq.entity.CmqConfig;
 
 import java.net.URLEncoder;
+import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
 public class CMQClient {
 
@@ -17,22 +17,14 @@ public class CMQClient {
         this.cmqConfig = cmqConfig;
     }
 
-    public void setSignMethod(String signMethod) {
-        if ("sha1".equals(signMethod) || "sha256".equals(signMethod)) {
-            cmqConfig.setSignMethod(signMethod);
-        } else {
-            throw new CMQClientException("Only support sha256 or sha1");
-        }
-    }
-
-    public String call(String action, TreeMap<String, String> param) throws Exception {
+    public String call(String action, Map<String, String> param) throws Exception {
         if(cmqConfig == null){
             throw new RuntimeException("cmqConfig is null!");
         }
         return call(action, param, cmqConfig);
     }
 
-    public String call(String action, TreeMap<String, String> param, CmqConfig cmqConfig) throws Exception {
+    public String call(String action, Map<String, String> param, CmqConfig cmqConfig) throws Exception {
         String rsp = "";
         param.put("Action", action);
         param.put("Nonce", Integer.toString(new Random().nextInt(java.lang.Integer.MAX_VALUE)));

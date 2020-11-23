@@ -16,10 +16,10 @@ import java.util.TreeMap;
  */
 public class Queue {
     protected String queueName;
-    protected CMQClient client;
+    protected CMQClientInterceptor.Chain client;
 
 
-    Queue(String queueName, CMQClient client) {
+    Queue(String queueName, CMQClientInterceptor.Chain client) {
         this.queueName = queueName;
         this.client = client;
     }
