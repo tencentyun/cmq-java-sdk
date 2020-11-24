@@ -15,7 +15,7 @@ import com.qcloud.cmq.json.JSONObject;
 public class Subscription {
 	protected String topicName;
 	protected String subscriptionName;
-	protected CMQClient client;
+	protected CMQClientInterceptor.Chain client;
 	/**
 	 * TODO construct .
 	 *
@@ -23,7 +23,7 @@ public class Subscription {
 	 * @param subscriptionName
 	 * @param client
 	 */
-	Subscription(final String topicName , final String subscriptionName,CMQClient client)
+	Subscription(final String topicName , final String subscriptionName, CMQClientInterceptor.Chain client)
 	{
 		this.topicName = topicName;
 		this.subscriptionName = subscriptionName;

@@ -1,7 +1,6 @@
 package com.qcloud.cmq;
 
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.lang.Integer;
 
 import com.qcloud.cmq.entity.CmqConfig;
@@ -21,33 +20,22 @@ import com.qcloud.cmq.json.*;
 public class Account {
 
 
-    protected CMQClient client;
+    protected CMQClientInterceptor.Chain client;
 
     public Account(String endpoint, String secretId, String secretKey) {
-        CmqConfig cmqConfig = new CmqConfig();
-        cmqConfig.setEndpoint(endpoint);
-        cmqConfig.setSecretId(secretId);
-        cmqConfig.setSecretKey(secretKey);
-        this.client = new CMQClient(cmqConfig);
+        this(new CmqConfig(endpoint, secretId, secretKey));
     }
 
     public Account(String secretId, String secretKey, String endpoint, String path, String method) {
-        CmqConfig cmqConfig = new CmqConfig();
-        cmqConfig.setEndpoint(endpoint);
-        cmqConfig.setSecretId(secretId);
-        cmqConfig.setSecretKey(secretKey);
-        cmqConfig.setPath(path);
-        cmqConfig.setMethod(method);
-        this.client = new CMQClient(cmqConfig);
+        this(new CmqConfig(endpoint, secretId, secretKey, path, method));
     }
 
     public Account(CmqConfig cmqConfig) {
-        this.client = new CMQClient(cmqConfig);
+        this(cmqConfig, Arrays.asList());
     }
 
-
-    public void setSignMethod(String Method) {
-        this.client.setSignMethod(Method);
+    public Account(CmqConfig cmqConfig, List<CMQClientInterceptor> interceptors) {
+        this.client = new CMQClientInterceptor.Chains(new CMQClient(cmqConfig), interceptors);
     }
 
     public void createQueue(String queueName, QueueMeta meta) throws Exception {

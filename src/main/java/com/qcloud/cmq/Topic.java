@@ -18,7 +18,7 @@ public class Topic {
     // topic name
     protected String topicName;
     // cmq client
-    protected CMQClient client;
+    protected CMQClientInterceptor.Chain client;
 
     /**
      * construct .
@@ -26,7 +26,7 @@ public class Topic {
      * @param topicName String
      * @param client    CMQClient
      */
-    Topic(String topicName, CMQClient client) {
+    Topic(String topicName, CMQClientInterceptor.Chain client) {
         this.topicName = topicName;
         this.client = client;
     }
