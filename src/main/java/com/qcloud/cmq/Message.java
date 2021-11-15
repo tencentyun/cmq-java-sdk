@@ -16,11 +16,11 @@ public class Message {
 	public String receiptHandle;
 	/** 消息体 */
 	public String msgBody;
-	/** 消息发送到队列的时间，从 1970年1月1日 00:00:00 000 开始的毫秒数 */
+	/** 消息发送到队列的时间，从 1970年1月1日 00:00:00 开始的秒数 */
     public long enqueueTime;
-	/** 消息下次可见的时间，从 1970年1月1日 00:00:00 000 开始的毫秒数 */
+	/** 消息下次可见的时间，从 1970年1月1日 00:00:00 开始的秒数 */
 	public long nextVisibleTime;
-	/** 消息第一次出队列的时间，从 1970年1月1日 00:00:00 000 开始的毫秒数 */
+	/** 消息第一次出队列的时间，从 1970年1月1日 00:00:00 开始的秒数 */
 	public long firstDequeueTime;
 	/** 出队列次数 */
 	public	int dequeueCount;
