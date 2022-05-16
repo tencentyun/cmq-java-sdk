@@ -5,6 +5,14 @@ import java.lang.Integer;
 
 import com.qcloud.cmq.entity.CmqConfig;
 import com.qcloud.cmq.json.*;
+import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
+import com.tencentcloudapi.tdmq.v20200217.TdmqClient;
+import com.tencentcloudapi.tdmq.v20200217.models.CmqQueue;
+import com.tencentcloudapi.tdmq.v20200217.models.DescribeCmqQueuesRequest;
+import com.tencentcloudapi.tdmq.v20200217.models.DescribeCmqQueuesResponse;
 
 /**
  * CMQ_jAVA_SDK_V1.0.2
@@ -100,30 +108,42 @@ public class Account {
      * @throws CMQClientException
      * @throws CMQServerException
      */
-    public int listQueue(String searchWord, int offset, int limit, List<String> queueList) throws Exception {
-        TreeMap<String, String> param = new TreeMap<String, String>();
-        if (!"".equals(searchWord)) {
-            param.put("searchWord", searchWord);
+    public int listQueue(String searchWord, int offset, int limit, List<String> queueList) {
+        try{
+            CmqConfig cmqConfig = client.getCmqConfig();
+            Credential cred = new Credential(cmqConfig.getSecretId(), cmqConfig.getSecretKey());
+            String endPoint = cmqConfig.getEndpoint();
+            String region = CMQTool.convertRegion(endPoint);
+            DescribeCmqQueuesRequest req = new DescribeCmqQueuesRequest();
+            if (offset > 0) {
+                req.setOffset((long) offset);
+            }
+            if (limit > 0) {
+                req.setLimit((long) limit);
+            }
+            if (null != searchWord && !"".equals(searchWord)) {
+                req.setQueueName(searchWord);
+            }
+            HttpProfile httpProfile = new HttpProfile();
+            httpProfile.setEndpoint(cmqConfig.getManagerEndpoint());
+            ClientProfile clientProfile = new ClientProfile();
+            clientProfile.setHttpProfile(httpProfile);
+            TdmqClient client = new TdmqClient(cred, region, clientProfile);
+            DescribeCmqQueuesResponse resp = client.DescribeCmqQueues(req);
+            CmqQueue[] cmqQueues = resp.getQueueList();
+            int totalCount = resp.getTotalCount().intValue();
+            if (cmqQueues.length > 0) {
+                for (CmqQueue queue : resp.getQueueList()) {
+                    queueList.add(queue.getQueueName());
+                }
+            }
+            return totalCount;
+        } catch (TencentCloudSDKException e) {
+            System.out.println(e.toString());
         }
-        if (offset >= 0) {
-            param.put("offset", Integer.toString(offset));
-        }
-        if (limit > 0) {
-            param.put("limit", Integer.toString(limit));
-        }
-
-        String result = this.client.call("ListQueue", param);
-        CMQTool.checkResult(result);
-        JSONObject jsonObj = new JSONObject(result);
-        int totalCount = jsonObj.getInt("totalCount");
-        JSONArray jsonArray = jsonObj.getJSONArray("queueList");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject obj = (JSONObject) jsonArray.get(i);
-            queueList.add(obj.getString("queueName"));
-        }
-
-        return totalCount;
+        return 0;
     }
+
 
     /**
      * get Queue

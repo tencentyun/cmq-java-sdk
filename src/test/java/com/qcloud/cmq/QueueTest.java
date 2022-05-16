@@ -446,4 +446,21 @@ public class QueueTest {
 
     }
 
+    @Test
+    public void testGetQueueAttribute() {
+        Queue queue = account.getQueue("wbin_test_queue");
+        QueueMeta meta2 = queue.getQueueAttributes();
+        Assert.assertEquals(10, meta2.pollingWaitSeconds);
+        Assert.assertEquals(30, meta2.visibilityTimeout);
+        Assert.assertEquals(1048576, meta2.maxMsgSize);
+        Assert.assertEquals(3600, meta2.msgRetentionSeconds);
+    }
+
+    @Test
+    public void testQueueList() {
+        List<String> vtQueue = new ArrayList<>();
+        int total = account.listQueue("", -1, -1, vtQueue);
+        Assert.assertEquals(55, total);
+    }
+
 }

@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -23,6 +25,27 @@ public class CMQTool {
 
     private static final String HMAC_ALGORITHM = "HmacSHA1";
     private static final String HMAC_SHA256_ALGORITHM = "HmacSHA256";
+
+	private static final Map<String, String> endPointMap = new HashMap<String,String>(){
+		{
+			put("bj","ap-beijing");
+			put("cd","ap-chengdu");
+			put("cq","ap-chongqing");
+			put("gz","ap-guangzhou");
+			put("hk","ap-hongkong");
+			put("kr","ap-seoul");
+			put("sh","ap-shanghai");
+			put("sg","ap-singapore");
+			put("de","eu-frankfurt");
+			put("usw","na-siliconvalley");
+			put("ca","na-toronto");
+			put("in","ap-mumbai");
+			put("use","na-ashburn");
+			put("th","ap-bangkok");
+			put("ru","eu-moscow");
+			put("jp","ap-tokyo");
+		}
+	};
 
 	public static String base64_encode(byte[] data) {
 		StringBuffer sb = new StringBuffer();
@@ -94,6 +117,16 @@ public class CMQTool {
 			log.error("error response:" + jsonObj.toString());
 			throw new CMQServerException(code, jsonObj.getString("message"));
 		}
+	}
+
+	public static String convertRegion(String endPoint) {
+		String rg;
+		if (endPoint.startsWith("https")) {
+			rg = endPoint.substring(12, endPoint.indexOf("."));
+		} else {
+			rg = endPoint.substring(7, endPoint.indexOf("."));
+		}
+		return endPointMap.get(rg);
 	}
 
 }
