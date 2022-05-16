@@ -1,5 +1,7 @@
 package com.qcloud.cmq;
 
+import com.qcloud.cmq.entity.CmqConfig;
+
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ public interface CMQClientInterceptor {
 
     interface Chain {
         String call(String action, Map<String, String> param) throws Exception ;
+        CmqConfig getCmqConfig();
     }
 
     class Chains implements Chain {
@@ -30,6 +33,11 @@ public interface CMQClientInterceptor {
         @Override
         public String call(String action, Map<String, String> param) throws Exception {
             return new DefaultChain(cmqClient, interceptorList).call(action, param);
+        }
+
+        @Override
+        public CmqConfig getCmqConfig() {
+            return this.cmqClient.cmqConfig;
         }
     }
 
@@ -53,6 +61,11 @@ public interface CMQClientInterceptor {
             } else {
                 return interceptorList.get(index++).intercept(action, param, this); // 传this(调度器)用于回调
             }
+        }
+
+        @Override
+        public CmqConfig getCmqConfig() {
+            return this.cmqClient.cmqConfig;
         }
     }
 }

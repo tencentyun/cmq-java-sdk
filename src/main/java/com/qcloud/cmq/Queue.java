@@ -1,5 +1,6 @@
 package com.qcloud.cmq;
 
+import com.qcloud.cmq.entity.CmqConfig;
 import com.qcloud.cmq.entity.CmqResponse;
 import com.qcloud.cmq.json.JSONArray;
 import com.qcloud.cmq.json.JSONObject;
@@ -7,6 +8,14 @@ import com.qcloud.cmq.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
+import com.tencentcloudapi.tdmq.v20200217.TdmqClient;
+import com.tencentcloudapi.tdmq.v20200217.models.CmqQueue;
+import com.tencentcloudapi.tdmq.v20200217.models.DescribeCmqQueueDetailRequest;
+import com.tencentcloudapi.tdmq.v20200217.models.DescribeCmqQueueDetailResponse;
 
 /**
  * Queue class.
@@ -64,30 +73,44 @@ public class Queue {
      *
      * @return 返回的队列属性参数
      */
-    public QueueMeta getQueueAttributes() throws Exception {
-        TreeMap<String, String> param = new TreeMap<String, String>();
-
-        param.put("queueName", this.queueName);
-        String result = this.client.call("GetQueueAttributes", param);
-        JSONObject jsonObj = new JSONObject(result);
-        CMQTool.checkResult(result);
-
+    public QueueMeta getQueueAttributes() {
         QueueMeta meta = new QueueMeta();
-        meta.maxMsgHeapNum = jsonObj.getInt("maxMsgHeapNum");
-        meta.pollingWaitSeconds = jsonObj.getInt("pollingWaitSeconds");
-        meta.visibilityTimeout = jsonObj.getInt("visibilityTimeout");
-        meta.maxMsgSize = jsonObj.getInt("maxMsgSize");
-        meta.msgRetentionSeconds = jsonObj.getInt("msgRetentionSeconds");
-        meta.createTime = jsonObj.getInt("createTime");
-        meta.lastModifyTime = jsonObj.getInt("lastModifyTime");
-        meta.activeMsgNum = jsonObj.getInt("activeMsgNum");
-        meta.inactiveMsgNum = jsonObj.getInt("inactiveMsgNum");
-        meta.rewindmsgNum = jsonObj.getInt("rewindMsgNum");
-        meta.minMsgTime = jsonObj.getInt("minMsgTime");
-        meta.delayMsgNum = jsonObj.getInt("delayMsgNum");
-        meta.rewindSeconds = jsonObj.getInt("rewindSeconds");
-
-
+        try{
+            CmqConfig cmqConfig = client.getCmqConfig();
+            Credential cred = new Credential(cmqConfig.getSecretId(), cmqConfig.getSecretKey());
+            String endPoint = cmqConfig.getEndpoint();
+            String region = CMQTool.convertRegion(endPoint);
+            HttpProfile httpProfile = new HttpProfile();
+            httpProfile.setEndpoint(cmqConfig.getManagerEndpoint());
+            ClientProfile clientProfile = new ClientProfile();
+            clientProfile.setHttpProfile(httpProfile);
+            TdmqClient client = new TdmqClient(cred, region, clientProfile);
+            DescribeCmqQueueDetailRequest req = new DescribeCmqQueueDetailRequest();
+            req.setQueueName(this.queueName);
+            DescribeCmqQueueDetailResponse resp = client.DescribeCmqQueueDetail(req);
+            CmqQueue cmqQueue = resp.getQueueDescribe();
+            meta.maxMsgHeapNum = cmqQueue.getMaxMsgHeapNum().intValue();
+            meta.pollingWaitSeconds = cmqQueue.getPollingWaitSeconds().intValue();
+            meta.visibilityTimeout = cmqQueue.getVisibilityTimeout().intValue();
+            meta.maxMsgSize = cmqQueue.getMaxMsgSize().intValue();
+            meta.msgRetentionSeconds = cmqQueue.getMsgRetentionSeconds().intValue();
+            meta.createTime = (int)(cmqQueue.getCreateTime()/1000);
+            meta.lastModifyTime = (int)(cmqQueue.getLastModifyTime()/1000);
+            meta.activeMsgNum = cmqQueue.getActiveMsgNum().intValue();
+            meta.inactiveMsgNum = cmqQueue.getInactiveMsgNum().intValue();
+            if (null != cmqQueue.getRewindMsgNum()) {
+                meta.rewindmsgNum = cmqQueue.getRewindMsgNum().intValue();
+            }
+            if (null != cmqQueue.getMinMsgTime()) {
+                meta.minMsgTime = cmqQueue.getMinMsgTime().intValue();
+            }
+            if (null != cmqQueue.getDelayMsgNum()) {
+                meta.delayMsgNum = cmqQueue.getDelayMsgNum().intValue();
+            }
+            meta.rewindSeconds = cmqQueue.getRewindSeconds().intValue();
+        } catch (TencentCloudSDKException e) {
+            System.out.println(e.toString());
+        }
         return meta;
     }
 

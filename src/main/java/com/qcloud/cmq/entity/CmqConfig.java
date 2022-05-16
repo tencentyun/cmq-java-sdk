@@ -11,6 +11,7 @@ public class CmqConfig {
     private String secretKey;
     private String method = "POST";
     private String signMethod = "sha1";
+    private String managerEndpoint = "tdmq.tencentcloudapi.com";
 
     public CmqConfig() {}
 
@@ -152,5 +153,13 @@ public class CmqConfig {
 
     public void setSlowThreshold(long slowThreshold) {
         this.slowThreshold = slowThreshold;
+    }
+
+    public String getManagerEndpoint() {
+        return managerEndpoint;
+    }
+
+    public void setManagerEndpoint(String managerEndpoint) {
+        this.managerEndpoint = managerEndpoint;
     }
 }
