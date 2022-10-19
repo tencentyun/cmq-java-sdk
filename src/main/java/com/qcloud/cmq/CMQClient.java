@@ -36,6 +36,9 @@ public class CMQClient {
         } else {
             param.put("SignatureMethod", "HmacSHA1");
         }
+        if (cmqConfig.getToken() != null && cmqConfig.getToken().length() > 0) {
+            param.put("Token", cmqConfig.getToken());
+        }
 
         String host = "";
         if (cmqConfig.getEndpoint().startsWith("https")) {

@@ -26,8 +26,16 @@ public class Account {
         this(new CmqConfig(endpoint, secretId, secretKey));
     }
 
+    public Account(String endpoint, String secretId, String secretKey, String token) {
+        this(new CmqConfig(endpoint, secretId, secretKey, token));
+    }
+
     public Account(String secretId, String secretKey, String endpoint, String path, String method) {
         this(new CmqConfig(endpoint, secretId, secretKey, path, method));
+    }
+
+    public Account(String secretId, String secretKey, String token, String endpoint, String path, String method) {
+        this(new CmqConfig(endpoint, secretId, secretKey, token, path, method));
     }
 
     public Account(CmqConfig cmqConfig) {

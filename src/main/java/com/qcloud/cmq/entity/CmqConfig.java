@@ -6,9 +6,10 @@ package com.qcloud.cmq.entity;
  */
 public class CmqConfig {
     private String endpoint;
-    private String path = "/v2/index.php";
+    private String path = "/";
     private String secretId;
     private String secretKey;
+    private String token;
     private String method = "POST";
     private String signMethod = "sha1";
 
@@ -20,10 +21,26 @@ public class CmqConfig {
         this.secretKey = secretKey;
     }
 
+    public CmqConfig(String endpoint, String secretId, String secretKey, String token) {
+        this.endpoint = endpoint;
+        this.secretId = secretId;
+        this.secretKey = secretKey;
+        this.token = token;
+    }
+
     public CmqConfig(String endpoint, String secretId, String secretKey, String path, String method) {
         this.endpoint = endpoint;
         this.secretId = secretId;
         this.secretKey = secretKey;
+        this.path = path;
+        this.method = method;
+    }
+
+    public CmqConfig(String endpoint, String secretId, String secretKey, String token, String path, String method) {
+        this.endpoint = endpoint;
+        this.secretId = secretId;
+        this.secretKey = secretKey;
+        this.token = token;
         this.path = path;
         this.method = method;
     }
@@ -112,6 +129,14 @@ public class CmqConfig {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getMethod() {
