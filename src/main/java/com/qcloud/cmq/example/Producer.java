@@ -10,98 +10,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Producer {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         //从腾讯云官网查询的云API密钥信息
-        String secretId="";
-        String secretKey="";
-        String endpoint = "https://cmq-queue-{$region}.api.qcloud.com";
-        String queueName = "test";
+        String secretId = "";
+        String secretKey = "";
+        String token = ""; // for auth with temporary secret
+        String endpoint = "https://cmq-gz.public.tencenttdmq.com";
+        String queueName = "test-1";
 
-        Account account = new Account(endpoint,secretId, secretKey);
+        //Account account = new Account(endpoint, secretId, secretKey);
+        Account account = new Account(endpoint, secretId, secretKey, token);
 
+        System.out.printf("--------------- queue[%s] ---------------\n", queueName);
+        Queue queue = account.getQueue(queueName);
         try {
-
-//            创建新队列
-
-//            System.out.println("---------------create queue ...---------------");
-//            QueueMeta meta = new QueueMeta();
-//            meta.pollingWaitSeconds = 10;
-//            meta.visibilityTimeout = 10;
-//            meta.maxMsgSize = 1048576;
-//            meta.msgRetentionSeconds = 345600;
-//            Queue queue = account.createQueue(queueName,meta);
-//            System.out.println(queueName + " created");
-
-//            列出当前帐号下所有队列名字
-
-//            System.out.println("---------------list queue ...---------------");
-//            ArrayList<String> vtQueue = new ArrayList<String>();
-//            int totalCount = account.listQueue("",-1,-1,vtQueue);
-//            System.out.println("totalCount:" + totalCount);
-//            for(int i=0;i<vtQueue.size();i++)
-//            {
-//                System.out.println("queueName:" + vtQueue.get(i));
-//            }
-
-//            删除队列
-
-//            System.out.println("---------------delete queue ...---------------");
-//            account.deleteQueue(queueName);
-//            System.out.println(queueName + " deleted");
-
-            // 获得队列实例（此处直接使用现有队列进行操作，也可按照上面的注释创建队列）
-            System.out.println("--------------- queue[qiyuan-test] ---------------");
-            Queue queue = account.getQueue(queueName);
-
-            // 设置队列属性
-            System.out.println("---------------set queue attributes ...---------------");
-            QueueMeta meta1 = new QueueMeta();
-            meta1.pollingWaitSeconds = 20;
-            queue.setQueueAttributes(meta1);
-            System.out.println("pollingWaitSeconds=20 set");
-
-            // 获取队列属性
-            System.out.println("---------------get queue attributes ...---------------");
-            QueueMeta meta2 = queue.getQueueAttributes();
-            System.out.println("maxMsgHeapNum:" + meta2.maxMsgHeapNum);
-            System.out.println("pollingWaitSeconds:" + meta2.pollingWaitSeconds);
-            System.out.println("visibilityTimeout:" + meta2.visibilityTimeout);
-            System.out.println("maxMsgSize:" + meta2.maxMsgSize);
-            System.out.println("createTime:" + meta2.createTime);
-            System.out.println("lastModifyTime:" + meta2.lastModifyTime);
-            System.out.println("activeMsgNum:" + meta2.activeMsgNum);
-            System.out.println("inactiveMsgNum:" + meta2.inactiveMsgNum);
-
             // 发送单条信息
             System.out.println("---------------send message ...---------------");
             String msg = "hello!";
-            CmqResponse cmqResponse = queue.send(msg);
-            System.out.println("==> send success! msg_id:" + cmqResponse.getMsgId() + " requestId:" + cmqResponse.getRequestId());
+            CmqResponse resp = queue.send(msg);
+            System.out.println("==> send success! msg_id:" + resp.getMsgId() + " requestId:" + resp.getRequestId());
 
-            //批量操作
             //批量发送消息
             System.out.println("---------------batch send message ...---------------");
-            ArrayList<String> vtMsgBody = new ArrayList<String>();
-            String msgBody = "hello world,this is cmq sdk for java 1";
-            vtMsgBody.add(msgBody);
-            msgBody = "hello world,this is cmq sdk for java 2";
-            vtMsgBody.add(msgBody);
-            msgBody = "hello world,this is cmq sdk for java 3";
-            vtMsgBody.add(msgBody);
-            List<CmqResponse> cmqResponses = queue.batchSend(vtMsgBody);
-            for (int i = 0; i < vtMsgBody.size(); i++) {
-                System.out.println("[" + vtMsgBody.get(i) + "] sent");
+            ArrayList<String> messages = new ArrayList<String>();
+            msg = "hello world,this is cmq sdk for java 1";
+            messages.add(msg);
+            msg = "hello world,this is cmq sdk for java 2";
+            messages.add(msg);
+            msg = "hello world,this is cmq sdk for java 3";
+            messages.add(msg);
+            List<CmqResponse> responses = queue.batchSend(messages);
+            for (int i = 0; i < messages.size(); i++) {
+                System.out.println("[" + messages.get(i) + "] sent");
             }
-            for (int i = 0; i < cmqResponses.size(); i++) {
-                CmqResponse response = cmqResponses.get(i);
+            for (int i = 0; i < responses.size(); i++) {
+                CmqResponse response = responses.get(i);
                 System.out.println("msgId:" + response.getMsgId() + " requestId:" + response.getRequestId());
             }
-
-
-        }catch(CMQServerException e1){
+        } catch (CMQServerException e1) {
             System.out.println("Server Exception, " + e1.toString());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("error..." + e.toString());
         }
     }
