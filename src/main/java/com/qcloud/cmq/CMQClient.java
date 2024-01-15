@@ -89,8 +89,11 @@ public class CMQClient {
             ActionProperties actionProperties = new ActionProperties();
             actionProperties.setActionType(ActionProperties.POLLING);
             if (param.get("pollingWaitSeconds") != null) {
-                actionProperties.setActionType(ActionProperties.POLLING_OLD);
                 actionProperties.setPollingWaitSeconds(Integer.parseInt(param.get("pollingWaitSeconds")));
+                // 轮询时间超过30s, 会使用独立的 httpClient
+                if (Integer.parseInt(param.get("pollingWaitSeconds")) > 30) {
+                    actionProperties.setActionType(ActionProperties.POLLING_OLD);
+                }
             }
             rsp = HttpUtil.request(url, req, cmqConfig, actionProperties);
         }else {
