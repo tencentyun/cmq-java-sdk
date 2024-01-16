@@ -64,7 +64,7 @@ public class HttpUtil {
         Response response = null;
         long start = System.currentTimeMillis();
         try {
-            //为兼容老接口,存在fd耗尽风险
+            // 为了兼容老接口 pollingWaitSeconds 支持自定义设置超过30s, 存在fd耗尽风险
             if (ActionProperties.POLLING_OLD.equals(actionProperties.getActionType())) {
                 int pollingWaitTime = actionProperties.getPollingWaitSeconds() >= 0 ? actionProperties.getPollingWaitSeconds() * 1000 : 0;
                 OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
