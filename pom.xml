@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>3.7.0</version>
+            <version>4.9.2</version>
             <!-- 在java中使用，要把android依赖排除掉-->
             <exclusions>
                 <exclusion>
